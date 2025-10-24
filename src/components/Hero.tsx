@@ -71,14 +71,13 @@ export default function Hero() {
                 className="w-full h-96 lg:h-[500px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-            </div>
-            
-            {/* Floating Elements */}
-            <div className="absolute -top-4 -left-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce">
-              <div className="text-2xl">🌱</div>
-            </div>
-            <div className="absolute -bottom-4 -right-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce delay-1000">
-              <div className="text-2xl">🌸</div>
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -left-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce z-20">
+                <div className="text-2xl">🌱</div>
+              </div>
+              <div className="absolute -bottom-4 -right-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce delay-1000 z-20">
+                <div className="text-2xl">🌸</div>
+              </div>
             </div>
           </div>
         </div>
