@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: moja-strona-dev
+    ports:
+      # Port dla Vite (frontend)
+      - "5173:5173"
+    volumes:
+      # Synchronizacja kodu lokalnego z kontenerem
+      - .:/app
+      # Zapobiega nadpisywaniu node_modules w kontenerze przez lokalny (jeśli istnieje)
+      - /app/node_modules
+
+

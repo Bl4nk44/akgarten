@@ -1,0 +1,98 @@
+import React from 'react';
+import { ArrowDown, Sparkles } from 'lucide-react';
+
+export default function Hero() {
+  const scrollToAbout = () => {
+    const element = document.getElementById('about');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const scrollToContact = () => {
+    const element = document.getElementById('contact');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+<section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-100 dark:from-gray-900 dark:via-gray-800 dark:to-green-900">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-20 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-green-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
+      </div>
+
+      <div className="container mx-auto px-4 py-20 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div className="text-center lg:text-left space-y-8">
+            <div className="inline-flex items-center space-x-2 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-4 py-2 rounded-full text-sm font-medium">
+              <Sparkles className="h-4 w-4" />
+              <span>Professionelle Gartenpflege seit 2015</span>
+            </div>
+            
+            <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
+              Ihr Garten,
+              <span className="text-green-600 dark:text-green-400 block">
+                unsere Leidenschaft
+              </span>
+            </h1>
+            
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl">
+              Verwandeln Sie Ihren Außenbereich in eine grüne Oase. Mit über 10 Jahren Erfahrung 
+              schaffen wir Gärten, die nicht nur schön aussehen, sondern auch nachhaltig gedeihen.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button 
+                onClick={scrollToContact}
+                className="bg-green-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Kostenlose Beratung
+              </button>
+              <button 
+                onClick={scrollToAbout}
+                className="border-2 border-green-600 text-green-600 dark:text-green-400 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-600 hover:text-white transition-all duration-300"
+              >
+                Mehr erfahren
+              </button>
+            </div>
+          </div>
+
+          {/* Right Content - Hero Image */}
+          <div className="relative">
+            <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+              <img 
+                src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                alt="Schöner Garten mit bunten Blumen"
+                className="w-full h-96 lg:h-[500px] object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+            </div>
+            
+            {/* Floating Elements */}
+            <div className="absolute -top-4 -left-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce">
+              <div className="text-2xl">🌱</div>
+            </div>
+            <div className="absolute -bottom-4 -right-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce delay-1000">
+              <div className="text-2xl">🌸</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <button 
+          onClick={scrollToAbout}
+          className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 transition-colors"
+        >
+          <ArrowDown className="h-8 w-8" />
+        </button>
+      </div>
+    </section>
+  );
+}
