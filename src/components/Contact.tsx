@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
 
+import WeatherWidget from './widgets/WeatherWidget';
+
 export default function Contact() {
   // ... (reszta stanów bez zmian)
   const [formData, setFormData] = useState({
@@ -95,83 +97,7 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16">
-          {/* Contact Information */}
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-                Kontaktinformationen
-              </h3>
-              
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
-                    <MapPin className="h-6 w-6 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Adresse</h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Gartenstraße 123<br />
-                      12345 Musterstadt<br />
-                      Deutschland
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
-                    <Phone className="h-6 w-6 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Telefon</h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      +49 (0) 123 456 789<br />
-                      Mobil: +49 (0) 987 654 321
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
-                    <Mail className="h-6 w-6 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">E-Mail</h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      info@gartenmeister.de<br />
-                      beratung@gartenmeister.de
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="bg-green-100 dark:bg-green-900 p-3 rounded-lg">
-                    <Clock className="h-6 w-6 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">Öffnungszeiten</h4>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      Mo - Fr: 8:00 - 18:00 Uhr<br />
-                      Sa: 9:00 - 16:00 Uhr<br />
-                      So: Nach Vereinbarung
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Map Placeholder */}
-            <div className="bg-gray-200 dark:bg-gray-700 rounded-2xl h-64 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500 dark:text-gray-400">
-                  Interaktive Karte<br />
-                  (Google Maps Integration)
-                </p>
-              </div>
-            </div>
-          </div>
-
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Contact Form */}
           <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl">
             {isSubmitted ? (
@@ -186,6 +112,7 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* ... form fields remain unchanged ... */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
@@ -313,6 +240,60 @@ export default function Contact() {
                 </button>
               </form>
             )}
+          </div>
+
+          {/* Weather Widget */}
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl h-full">
+            <WeatherWidget />
+          </div>
+        </div>
+
+        {/* Contact Information (Horizontal) */}
+        <div className="mt-20 pt-12 border-t border-gray-200 dark:border-gray-700">
+          <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-10">
+            Unsere Kontaktinformationen
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
+                <MapPin className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h4 className="font-semibold text-gray-900 dark:text-white">Adresse</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                Gartenstraße 123, 12345 Musterstadt
+              </p>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
+                <Phone className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h4 className="font-semibold text-gray-900 dark:text-white">Telefon</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                +49 (0) 123 456 789
+              </p>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
+                <Mail className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h4 className="font-semibold text-gray-900 dark:text-white">E-Mail</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                info@gartenmeister.de
+              </p>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
+                <Clock className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h4 className="font-semibold text-gray-900 dark:text-white">Öffnungszeiten</h4>
+              <p className="text-gray-600 dark:text-gray-300">
+                Mo - Fr: 8:00 - 18:00 Uhr
+              </p>
+            </div>
           </div>
         </div>
       </div>
