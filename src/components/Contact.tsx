@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { useMutation } from 'convex/react';
 // import { api } from '../../convex/_generated/api';
 import { toast } from 'sonner';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
-
-import WeatherWidget from './widgets/WeatherWidget';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
 export default function Contact() {
-  // ... (reszta stanów bez zmian)
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://elfsightcdn.com/platform.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Opcjonalne: sprzątanie skryptu, jeśli komponent zostanie odmontowany
+      const elfsightScript = document.querySelector('script[src="https://elfsightcdn.com/platform.js"]');
+      if (elfsightScript) {
+        // document.body.removeChild(elfsightScript);
+      }
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,8 +28,9 @@ export default function Contact() {
     inquiryType: '',
     message: '',
     preferredDate: '',
-    newsletter: false
+    address: ''
   });
+  const [addressValue, setAddressValue] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -26,7 +40,7 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.email || !formData.message || !formData.inquiryType) {
+    if (!formData.name || !formData.email || !formData.message || !formData.inquiryType || !formData.address) {
       toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
       return;
     }
@@ -52,12 +66,14 @@ export default function Contact() {
             inquiryType: '',
             message: '',
             preferredDate: '',
-            newsletter: false
+            address: ''
           });
+          setAddressValue(null);
           setIsSubmitted(false);
         }, 3000);
         
       } catch (error) {
+        console.error("Form submission error:", error);
         toast.error('Fehler beim Senden der Nachricht. Bitte versuchen Sie es erneut.');
       } finally {
         setIsSubmitting(false);
@@ -84,7 +100,6 @@ export default function Contact() {
   ];
 
   return (
-    // ... (JSX bez zmian)
     <section id="contact" className="py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
@@ -97,7 +112,12 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="grid lg:grid-cols-2 gap-12 items-stretch">
+          {/* Weather Widget Placeholder */}
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl flex flex-col justify-center">
+            <div className="elfsight-app-43d5de15-9eed-486d-9af5-31f916ec9032" data-elfsight-app-lazy></div>
+          </div>
+
           {/* Contact Form */}
           <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl">
             {isSubmitted ? (
@@ -111,8 +131,7 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* ... form fields remain unchanged ... */}
+              <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-6 flex flex-col h-full">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
@@ -194,6 +213,35 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                    Adresse *
+                  </label>
+                  <GooglePlacesAutocomplete
+                    apiKey={import.meta.env.VITE_GOOGLE_PLACES_API_KEY}
+                    selectProps={{
+                      value: addressValue,
+                      onChange: (newValue) => {
+                        setAddressValue(newValue);
+                        setFormData(prev => ({ ...prev, address: newValue?.label || '' }));
+                      },
+                      placeholder: 'Beginnen Sie mit der Eingabe Ihrer Adresse...',
+                      styles: {
+                        input: (provided) => ({ ...provided, padding: '1rem', borderRadius: '0.75rem', backgroundColor: '#374151', color: 'white' }),
+                        control: (provided) => ({ ...provided, backgroundColor: '#374151', border: '1px solid #4b5563', borderRadius: '0.75rem' }),
+                        option: (provided, state) => ({ ...provided, backgroundColor: state.isFocused ? '#1f2937' : '#374151', color: 'white' }),
+                        menu: (provided) => ({ ...provided, backgroundColor: '#374151' }),
+                        singleValue: (provided) => ({ ...provided, color: 'white' }),
+                      },
+                    }}
+                    autocompletionRequest={{
+                      bounds: [{ lat: 54.5, lng: 5.9 }, { lat: 47.3, lng: 15.1 }],
+                      componentRestrictions: { country: 'de' },
+                      language: 'de',
+                    }}
+                  />
+                </div>
+
+                <div className="flex-grow flex flex-col">
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                     Nachricht *
                   </label>
                   <textarea
@@ -201,24 +249,9 @@ export default function Contact() {
                     value={formData.message}
                     onChange={handleChange}
                     required
-                    rows={6}
-                    className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors resize-none flex-grow"
                     placeholder="Beschreiben Sie Ihr Anliegen oder Projekt..."
                   />
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <input
-                    type="checkbox"
-                    name="newsletter"
-                    checked={formData.newsletter}
-                    onChange={handleChange}
-                    className="mt-1 w-5 h-5 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                  />
-                  <label className="text-sm text-gray-600 dark:text-gray-300">
-                    Ich möchte den Newsletter mit Gartentipps und Angeboten erhalten. 
-                    (Abmeldung jederzeit möglich)
-                  </label>
                 </div>
 
                 <button
@@ -240,11 +273,6 @@ export default function Contact() {
                 </button>
               </form>
             )}
-          </div>
-
-          {/* Weather Widget */}
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl h-full">
-            <WeatherWidget />
           </div>
         </div>
 
