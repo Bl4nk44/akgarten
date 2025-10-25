@@ -20,9 +20,9 @@ export default function Hero() {
 <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-100 dark:from-gray-900 dark:via-gray-800 dark:to-green-900">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-green-400 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-2000"></div>
+        <div className="absolute top-20 left-20 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl animate-drift [animation-duration:25s]"></div>
+        <div className="absolute top-40 right-20 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-drift [animation-duration:30s] [animation-delay:-5s]"></div>
+        <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-green-400 rounded-full mix-blend-multiply filter blur-xl animate-drift [animation-duration:20s] [animation-delay:-10s]"></div>
       </div>
 
       <div className="container mx-auto px-4 py-20 relative z-10">
@@ -71,13 +71,14 @@ export default function Hero() {
                 className="w-full h-96 lg:h-[500px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -left-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce z-20">
-                <div className="text-2xl">🌱</div>
-              </div>
-              <div className="absolute -bottom-4 -right-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-bounce delay-1000 z-20">
-                <div className="text-2xl">🌸</div>
-              </div>
+            </div>
+            
+            {/* Floating Elements */}
+            <div className="absolute -top-6 -left-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-wiggle z-20">
+              <div className="text-2xl">🌱</div>
+            </div>
+            <div className="absolute -bottom-6 -right-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-wiggle [animation-delay:-0.5s] z-20">
+              <div className="text-2xl">🌸</div>
             </div>
           </div>
         </div>

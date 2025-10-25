@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Toaster } from 'sonner';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -8,13 +8,14 @@ import Widgets from './components/Widgets';
 import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import { useTheme } from './contexts/ThemeContext';
 
 export default function App() {
-  const { darkMode } = useTheme();
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
 
   return (
-    <div className={`min-h-screen transition-colors duration-300 ${darkMode ? 'dark' : ''}`}>
+    <div className="dark min-h-screen transition-colors duration-300">
       <Header />
       <Hero />
       <About />

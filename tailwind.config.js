@@ -32,6 +32,22 @@ module.exports = {
           hover: "#7C3AED",
         },
       },
+      keyframes: {
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
+        },
+        drift: {
+          '0%, 100%': { transform: 'translate(0, 0)' },
+          '25%': { transform: 'translate(20px, -15px)' },
+          '50%': { transform: 'translate(-15px, 10px)' },
+          '75%': { transform: 'translate(10px, 20px)' },
+        }
+      },
+      animation: {
+        wiggle: 'wiggle 1s ease-in-out infinite',
+        drift: 'drift 20s ease-in-out infinite alternate',
+      },
       spacing: {
         "form-field": "16px",
         section: "32px",
