@@ -91,7 +91,7 @@ export default function Services() {
                 ))}
               </ul>
               
-              <button className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors duration-300">
+              <button className="relative w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors duration-300 btn-shine overflow-hidden">
                 Mehr erfahren
               </button>
             </div>

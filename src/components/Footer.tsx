@@ -1,5 +1,5 @@
 import React from 'react';
-import { Leaf, Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -17,25 +17,13 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Leaf className="h-8 w-8 text-green-300" />
-              <span className="text-2xl font-bold">GartenMeister</span>
+            <div className="flex items-center space-x-3">
+              <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-12 w-auto" />
+              <span className="text-xl font-bold">AK Hausmeisterservice</span>
             </div>
             <p className="text-green-200 leading-relaxed">
               Ihr Partner für professionelle Gartenpflege und -gestaltung. 
-              Seit über 10 Jahren verwandeln wir Träume in grüne Realität.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-green-300 hover:text-white transition-colors">
-                <Facebook className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-green-300 hover:text-white transition-colors">
-                <Instagram className="h-6 w-6" />
-              </a>
-              <a href="#" className="text-green-300 hover:text-white transition-colors">
-                <Twitter className="h-6 w-6" />
-              </a>
-            </div>
           </div>
 
           {/* Quick Links */}
@@ -87,7 +75,7 @@ export default function Footer() {
         <div className="border-t border-green-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-green-300 text-sm">
-              © {currentYear} GartenMeister. Alle Rechte vorbehalten.
+              © {currentYear} AK Hausmeisterservice. Alle Rechte vorbehalten.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-green-300 hover:text-white text-sm transition-colors">

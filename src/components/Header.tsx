@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Leaf } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,13 +27,13 @@ export default function Header() {
         ? 'bg-green-50/80 dark:bg-green-950/80 backdrop-blur-md shadow-lg' 
         : 'bg-transparent'
     }`}>
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-2">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <Leaf className="h-8 w-8 text-green-600" />
-            <span className="text-2xl font-bold text-gray-800 dark:text-white">
-              GartenMeister
+          <div className="flex items-center space-x-3">
+            <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-12 w-auto" />
+            <span className="text-xl font-bold text-gray-800 dark:text-white hidden sm:inline">
+              AK Hausmeisterservice
             </span>
           </div>
 
@@ -92,42 +92,12 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden mt-4 py-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
             <nav className="flex flex-col space-y-4 px-4">
-              <button 
-                onClick={() => scrollToSection('home')}
-                className="text-left text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
-              >
-                Startseite
-              </button>
-              <button 
-                onClick={() => scrollToSection('about')}
-                className="text-left text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
-              >
-                Über mich
-              </button>
-              <button 
-                onClick={() => scrollToSection('services')}
-                className="text-left text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
-              >
-                Leistungen
-              </button>
-              <button 
-                onClick={() => scrollToSection('widgets')}
-                className="text-left text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
-              >
-                Garten-Tools
-              </button>
-              <button 
-                onClick={() => scrollToSection('gallery')}
-                className="text-left text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
-              >
-                Galerie
-              </button>
-              <button 
-                onClick={() => scrollToSection('contact')}
-                className="text-left bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition-colors w-fit"
-              >
-                Kontakt
-              </button>
+              <button onClick={() => scrollToSection('home')} className="text-left text-gray-700 dark:text-gray-300">Startseite</button>
+              <button onClick={() => scrollToSection('about')} className="text-left text-gray-700 dark:text-gray-300">Über mich</button>
+              <button onClick={() => scrollToSection('services')} className="text-left text-gray-700 dark:text-gray-300">Leistungen</button>
+              <button onClick={() => scrollToSection('widgets')} className="text-left text-gray-700 dark:text-gray-300">Garten-Tools</button>
+              <button onClick={() => scrollToSection('gallery')} className="text-left text-gray-700 dark:text-gray-300">Galerie</button>
+              <button onClick={() => scrollToSection('contact')} className="text-left bg-green-600 text-white px-6 py-2 rounded-full w-fit">Kontakt</button>
             </nav>
           </div>
         )}

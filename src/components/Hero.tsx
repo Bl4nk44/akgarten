@@ -17,7 +17,7 @@ export default function Hero() {
   };
 
   return (
-<section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-100 dark:from-gray-900 dark:via-gray-800 dark:to-green-900">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-50 via-white to-green-100 dark:from-gray-900 dark:via-gray-800 dark:to-green-900">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-20 left-20 w-72 h-72 bg-green-300 rounded-full mix-blend-multiply filter blur-xl animate-drift [animation-duration:25s]"></div>
@@ -49,13 +49,13 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button 
                 onClick={scrollToContact}
-                className="bg-green-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-green-600 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 btn-shine"
               >
                 Kostenlose Beratung
               </button>
               <button 
                 onClick={scrollToAbout}
-                className="border-2 border-green-600 text-green-600 dark:text-green-400 px-8 py-4 rounded-full text-lg font-semibold hover:bg-green-600 hover:text-white transition-all duration-300"
+                className="relative inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-green-600 dark:text-green-400 border-2 border-green-600 rounded-xl hover:bg-green-600 hover:text-white transition-all duration-300 overflow-hidden btn-shine"
               >
                 Mehr erfahren
               </button>
@@ -73,7 +73,6 @@ export default function Hero() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
             
-            {/* Floating Elements */}
             <div className="absolute -top-6 -left-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-wiggle z-20">
               <div className="text-2xl">🌱</div>
             </div>
@@ -84,7 +83,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <button 
           onClick={scrollToAbout}

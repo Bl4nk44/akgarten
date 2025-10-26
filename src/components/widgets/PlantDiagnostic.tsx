@@ -1,12 +1,20 @@
-import { useState, useMemo } from 'react';
-import { Leaf, Stethoscope, X } from 'lucide-react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { Stethoscope, X } from 'lucide-react'; // Usunięto 'Leaf'
 import { diagnosticData } from '../../data/plantDiagnosticData';
 
 export default function PlantDiagnostic() {
   const [selectedPlant, setSelectedPlant] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  const plantNames = useMemo(() => [...new Set(diagnosticData.map(d => d.plantName))], []);
+  const plantNames = useMemo(() => [...new Set(diagnosticData.map(d => d.plantName))].sort(), []);
+
+  const filteredPlants = useMemo(() => {
+    if (!searchQuery) return [];
+    return plantNames.filter(name => name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery, plantNames]);
 
   const availableSymptoms = useMemo(() => {
     if (!selectedPlant) return [];
@@ -23,11 +31,24 @@ export default function PlantDiagnostic() {
     );
   }, [selectedPlant, selectedSymptoms]);
 
-  const handlePlantChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedPlant(e.target.value);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handlePlantSelect = (plantName: string) => {
+    setSelectedPlant(plantName);
+    setSearchQuery(plantName);
+    setIsSearchFocused(false);
     setSelectedSymptoms([]);
   };
-  
+
+  // POPRAWIONA NAZWA FUNKCJI
   const toggleSymptom = (symptom: string) => {
     setSelectedSymptoms(prev => 
       prev.includes(symptom)
@@ -44,12 +65,29 @@ export default function PlantDiagnostic() {
       </div>
       <div className="space-y-6">
         <div className="grid lg:grid-cols-2 gap-8 items-start">
-          <div>
-            <label className="block text-lg font-semibold text-gray-900 dark:text-white mb-2">1. Pflanze auswählen</label>
-            <select value={selectedPlant} onChange={handlePlantChange} className="w-full p-3 border rounded-xl dark:bg-gray-800 dark:border-gray-600">
-              <option value="">-- Pflanze wählen --</option>
-              {plantNames.map(name => <option key={name} value={name}>{name}</option>)}
-            </select>
+          <div className="relative" ref={searchContainerRef}>
+            <label className="block text-lg font-semibold text-gray-900 dark:text-white mb-2">1. Pflanze suchen</label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setSelectedPlant(''); }}
+              onFocus={() => setIsSearchFocused(true)}
+              placeholder="z.B. Tomate, Rose..."
+              className="w-full p-3 border rounded-xl dark:bg-gray-700 dark:border-gray-600 text-gray-900 dark:text-white"
+            />
+            {isSearchFocused && searchQuery && filteredPlants.length > 0 && (
+              <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                {filteredPlants.map(plantName => (
+                  <li
+                    key={plantName}
+                    onClick={() => handlePlantSelect(plantName)}
+                    className="px-4 py-2 cursor-pointer hover:bg-purple-100 dark:hover:bg-gray-600 dark:text-white"
+                  >
+                    {plantName}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div>
             <label className="block text-lg font-semibold text-gray-900 dark:text-white mb-2">2. Symptome auswählen</label>
@@ -62,7 +100,7 @@ export default function PlantDiagnostic() {
                     className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-200 flex items-center space-x-2 ${
                       selectedSymptoms.includes(symptom)
                         ? 'bg-purple-600 text-white'
-                        : 'bg-white dark:bg-gray-700 hover:bg-purple-100 dark:hover:bg-gray-600'
+                        : 'bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-purple-100 dark:hover:bg-gray-500'
                     }`}
                   >
                     <span>{symptom}</span>
@@ -81,9 +119,9 @@ export default function PlantDiagnostic() {
             {diagnosis.length > 0 ? (
               diagnosis.map((diag, index) => (
                 <div key={index} className="bg-white dark:bg-gray-800/50 rounded-xl p-4 animate-fade-in">
-                  <h5 className="font-bold text-purple-700 dark:text-purple-400">{diag.problem}</h5>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1"><strong className="dark:text-white">Ursache:</strong> {diag.cause}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1"><strong className="dark:text-white">Behandlung:</strong> {diag.treatment}</p>
+                  <h5 className="font-bold text-purple-700 dark:text-purple-400 flex items-center"><Stethoscope className="h-5 w-5 mr-2" />{diag.problem}</h5>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 pl-7"><strong className="text-gray-800 dark:text-white">Ursache:</strong> {diag.cause}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 pl-7"><strong className="text-gray-800 dark:text-white">Behandlung:</strong> {diag.treatment}</p>
                 </div>
               ))
             ) : (

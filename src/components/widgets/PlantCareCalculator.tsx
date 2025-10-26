@@ -1,11 +1,39 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Droplets, Sun, Wind, Atom } from 'lucide-react';
 import { plantCareData } from '../../data/plantCareData';
 
 export default function PlantCareCalculator() {
   const [selectedPlantName, setSelectedPlantName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  const plantNames = useMemo(() => [...new Set(plantCareData.map(p => p.name))].sort(), []);
+
+  const filteredPlants = useMemo(() => {
+    if (!searchQuery) return [];
+    return plantNames.filter(name => name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [searchQuery, plantNames]);
+
+  const selectedPlant = useMemo(() => {
+    return plantCareData.find(p => p.name === selectedPlantName);
+  }, [selectedPlantName]);
   
-  const selectedPlant = plantCareData.find(p => p.name === selectedPlantName);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handlePlantSelect = (plantName: string) => {
+    setSelectedPlantName(plantName);
+    setSearchQuery(plantName);
+    setIsSearchFocused(false);
+  };
 
   const getWateringText = (level: string) => {
     switch (level) {
@@ -36,20 +64,31 @@ export default function PlantCareCalculator() {
         </p>
       </div>
 
-      <div className="max-w-md mx-auto mb-8">
+      <div className="max-w-md mx-auto mb-8 relative" ref={searchContainerRef}>
         <label className="block text-lg font-semibold text-gray-900 dark:text-white mb-2">
-          Pflanze auswählen:
+          Pflanze suchen:
         </label>
-        <select
-          value={selectedPlantName}
-          onChange={(e) => setSelectedPlantName(e.target.value)}
-          className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-        >
-          <option value="">-- Pflanze wählen --</option>
-          {plantCareData.map((plant) => (
-            <option key={plant.name} value={plant.name}>{plant.name} ({plant.category})</option>
-          ))}
-        </select>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => { setSearchQuery(e.target.value); setSelectedPlantName(''); }}
+          onFocus={() => setIsSearchFocused(true)}
+          placeholder="z.B. Tomate, Rose..."
+          className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+        />
+        {isSearchFocused && searchQuery && filteredPlants.length > 0 && (
+          <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+            {filteredPlants.map(plantName => (
+              <li
+                key={plantName}
+                onClick={() => handlePlantSelect(plantName)}
+                className="px-4 py-2 cursor-pointer hover:bg-green-100 dark:hover:bg-gray-600 dark:text-white"
+              >
+                {plantName}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {selectedPlant ? (
@@ -84,7 +123,7 @@ export default function PlantCareCalculator() {
         <div className="text-center py-12">
           <div className="text-6xl mb-4">🌿</div>
           <p className="text-gray-500 dark:text-gray-400">
-            Wählen Sie eine Pflanze aus der Liste aus.
+            Suchen und wählen Sie eine Pflanze aus.
           </p>
         </div>
       )}
