@@ -1,166 +1,93 @@
-import React, { useState } from 'react';
-// import { useQuery } from 'convex/react';
-// import { api } from '../../../convex/_generated/api';
-import { Droplets, Sun, Thermometer, Clock } from 'lucide-react';
+import { useState } from 'react';
+import { Droplets, Sun, Wind, Atom } from 'lucide-react';
+import { plantCareData } from '../../data/plantCareData';
 
 export default function PlantCareCalculator() {
-  const [selectedPlant, setSelectedPlant] = useState('');
+  const [selectedPlantName, setSelectedPlantName] = useState('');
   
-  // Usunięty hook useQuery
-  // const plantCare = useQuery(api.plants.getPlantCare, 
-  //   selectedPlant ? { plantName: selectedPlant } : "skip"
-  // );
+  const selectedPlant = plantCareData.find(p => p.name === selectedPlantName);
 
-  // Statyczne dane pielęgnacji
-  const plantCare = selectedPlant ? {
-    wateringFrequency: '5-7',
-    sunlight: 'partial',
-    soilType: 'gut durchlässig',
-    difficulty: 'medium',
-    description: `Dies sind allgemeine Tipps für ${selectedPlant}. Stellen Sie sicher, dass die spezifischen Bedürfnisse Ihrer Pflanze erfüllt werden.`
-  } : null;
-
-  const commonPlants = [
-    'Rose', 'Lavendel', 'Basilikum', 'Tomate', 'Geranien', 
-    'Hortensie', 'Ficus', 'Monstera', 'Sukkulenten', 'Orchidee'
-  ];
-
-  const getSunlightText = (sunlight: string) => {
-    switch (sunlight) {
-      case 'full': return 'Vollsonne (6+ Stunden)';
-      case 'partial': return 'Halbschatten (3-6 Stunden)';
-      case 'shade': return 'Schatten (< 3 Stunden)';
-      default: return 'Halbschatten (3-6 Stunden)';
+  const getWateringText = (level: string) => {
+    switch (level) {
+      case 'hoch': return 'Hoch (oft gießen)';
+      case 'mittel': return 'Mittel (regelmäßig)';
+      case 'niedrig': return 'Niedrig (selten gießen)';
+      default: return 'Unbekannt';
     }
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'text-green-600 dark:text-green-400';
-      case 'medium': return 'text-yellow-600 dark:text-yellow-400';
-      case 'hard': return 'text-red-600 dark:text-red-400';
-      default: return 'text-yellow-600 dark:text-yellow-400';
-    }
-  };
-
-  const getDifficultyText = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy': return 'Einfach';
-      case 'medium': return 'Mittel';
-      case 'hard': return 'Schwierig';
-      default: return 'Mittel';
+  const getSunlightText = (level: string) => {
+    switch (level) {
+      case 'sonne': return 'Vollsonne (6+ Std.)';
+      case 'halbschatten': return 'Halbschatten (3-6 Std.)';
+      case 'schatten': return 'Schatten (< 3 Std.)';
+      default: return 'Unbekannt';
     }
   };
 
   return (
-    // ... (JSX bez zmian)
     <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-3xl p-8 shadow-xl">
       <div className="text-center mb-8">
         <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
           Pflanzenpflege-Rechner
         </h3>
         <p className="text-gray-600 dark:text-gray-300">
-          Wählen Sie eine Pflanze und erhalten Sie personalisierte Pflegehinweise.
+          Wählen Sie eine Pflanze und erhalten Sie sofortige Pflegehinweise.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Plant Selection */}
-        <div>
-          <label className="block text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Pflanze auswählen:
-          </label>
-          <select
-            value={selectedPlant}
-            onChange={(e) => setSelectedPlant(e.target.value)}
-            className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          >
-            <option value="">-- Pflanze wählen --</option>
-            {commonPlants.map((plant) => (
-              <option key={plant} value={plant}>{plant}</option>
-            ))}
-          </select>
+      <div className="max-w-md mx-auto mb-8">
+        <label className="block text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          Pflanze auswählen:
+        </label>
+        <select
+          value={selectedPlantName}
+          onChange={(e) => setSelectedPlantName(e.target.value)}
+          className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+        >
+          <option value="">-- Pflanze wählen --</option>
+          {plantCareData.map((plant) => (
+            <option key={plant.name} value={plant.name}>{plant.name} ({plant.category})</option>
+          ))}
+        </select>
+      </div>
 
-          <div className="mt-6">
-            <input
-              type="text"
-              placeholder="Oder eigene Pflanze eingeben..."
-              value={selectedPlant}
-              onChange={(e) => setSelectedPlant(e.target.value)}
-              className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            />
+      {selectedPlant ? (
+        <div className="bg-white dark:bg-gray-800/50 p-6 rounded-2xl shadow-inner animate-fade-in">
+          <h4 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-6">
+            Pflege für: <span className="text-green-600 dark:text-green-400">{selectedPlant.name}</span>
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+              <Droplets className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+              <h5 className="font-semibold mb-1 dark:text-white">Gießen</h5>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{getWateringText(selectedPlant.watering)}</p>
+            </div>
+            <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+              <Sun className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
+              <h5 className="font-semibold mb-1 dark:text-white">Licht</h5>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{getSunlightText(selectedPlant.sunlight)}</p>
+            </div>
+            <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+              <Wind className="h-8 w-8 text-gray-500 mx-auto mb-2" />
+              <h5 className="font-semibold mb-1 dark:text-white">Boden</h5>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{selectedPlant.soil}</p>
+            </div>
+            <div className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
+              <Atom className="h-8 w-8 text-green-500 mx-auto mb-2" />
+              <h5 className="font-semibold mb-1 dark:text-white">Dünger</h5>
+              <p className="text-sm text-gray-600 dark:text-gray-300">{selectedPlant.fertilizer}</p>
+            </div>
           </div>
         </div>
-
-        {/* Care Instructions */}
-        <div>
-          {plantCare && selectedPlant && (
-            <div className="space-y-6">
-              <h4 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Pflegehinweise für {selectedPlant}
-              </h4>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Droplets className="h-5 w-5 text-blue-600" />
-                    <span className="font-semibold text-gray-900 dark:text-white">Gießen</span>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    Alle {plantCare.wateringFrequency} Tage
-                  </p>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Sun className="h-5 w-5 text-yellow-600" />
-                    <span className="font-semibold text-gray-900 dark:text-white">Licht</span>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    {getSunlightText(plantCare.sunlight)}
-                  </p>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Thermometer className="h-5 w-5 text-green-600" />
-                    <span className="font-semibold text-gray-900 dark:text-white">Boden</span>
-                  </div>
-                  <p className="text-gray-600 dark:text-gray-300">
-                    {plantCare.soilType}
-                  </p>
-                </div>
-
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Clock className="h-5 w-5 text-purple-600" />
-                    <span className="font-semibold text-gray-900 dark:text-white">Schwierigkeit</span>
-                  </div>
-                  <p className={`font-semibold ${getDifficultyColor(plantCare.difficulty)}`}>
-                    {getDifficultyText(plantCare.difficulty)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-                <h5 className="font-semibold text-gray-900 dark:text-white mb-3">Zusätzliche Tipps:</h5>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                  {plantCare.description}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {!selectedPlant && (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🌱</div>
-              <p className="text-gray-500 dark:text-gray-400">
-                Wählen Sie eine Pflanze aus, um Pflegehinweise zu erhalten.
-              </p>
-            </div>
-          )}
+      ) : (
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🌿</div>
+          <p className="text-gray-500 dark:text-gray-400">
+            Wählen Sie eine Pflanze aus der Liste aus.
+          </p>
         </div>
-      </div>
+      )}
     </div>
   );
 }

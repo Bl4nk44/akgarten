@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import PlantCareCalculator from './widgets/PlantCareCalculator';
 import SeasonalCalendar from './widgets/SeasonalCalendar';
 import PlantDiagnostic from './widgets/PlantDiagnostic';
-import SunShadeSimulator from './widgets/SunShadeSimulator';
 
 export default function Widgets() {
-  const [activeWidget, setActiveWidget] = useState('calculator');
+  const [activeWidget, setActiveWidget] = useState('calendar');
 
   const widgets = [
-    { id: 'calculator', title: 'Pflanzenpflege-Rechner', icon: '🌱' },
     { id: 'calendar', title: 'Garten-Kalender', icon: '📅' },
+    { id: 'calculator', title: 'Pflanzenpflege-Rechner', icon: '🌱' },
     { id: 'diagnostic', title: 'Pflanzen-Diagnose', icon: '🔍' },
-    { id: 'simulator', title: 'Sonne & Schatten', icon: '☀️' },
   ];
 
   return (
@@ -46,10 +44,9 @@ export default function Widgets() {
 
         {/* Widget Content */}
         <div className="max-w-4xl mx-auto">
-          {activeWidget === 'calculator' && <PlantCareCalculator />}
           {activeWidget === 'calendar' && <SeasonalCalendar />}
+          {activeWidget === 'calculator' && <PlantCareCalculator />}
           {activeWidget === 'diagnostic' && <PlantDiagnostic />}
-          {activeWidget === 'simulator' && <SunShadeSimulator />}
         </div>
       </div>
     </section>

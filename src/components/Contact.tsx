@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+import { CheckCircle, Send, MapPin, Phone, Mail, Clock } from 'lucide-react';
 
 export default function Contact() {
   useEffect(() => {
@@ -9,14 +8,7 @@ export default function Contact() {
     script.src = "https://elfsightcdn.com/platform.js";
     script.async = true;
     document.body.appendChild(script);
-
-    return () => {
-      const elfsightScript = document.querySelector('script[src="https://elfsightcdn.com/platform.js"]');
-      if (elfsightScript) {
-        // W normalnych warunkach możnaby go usunąć, ale widgety często tego nie lubią.
-        // document.body.removeChild(elfsightScript);
-      }
-    }
+    return () => { /* Cleanup */ };
   }, []);
 
   const [formData, setFormData] = useState({
@@ -24,50 +16,74 @@ export default function Contact() {
     email: '',
     phone: '',
     inquiryType: '',
-    address: '',
+    addressComponents: {
+      street: '',
+      streetNumber: '',
+      postalCode: '',
+      city: '',
+    },
     message: '',
-    preferredDate: ''
+    preferredDate: '',
   });
-  const [addressValue, setAddressValue] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.address || !formData.message || !formData.inquiryType) {
+    if (!formData.name || !formData.email || !formData.addressComponents.street || !formData.message || !formData.inquiryType) {
       toast.error('Bitte füllen Sie alle Pflichtfelder aus.');
       return;
     }
-
-    setIsSubmitting(true);
-    console.log("Wysyłane dane formularza:", formData);
     
-    setTimeout(() => {
-      try {
-        setIsSubmitted(true);
-        toast.success('Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.');
-        
-        setTimeout(() => {
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      setIsSubmitted(true);
+      toast.success('Vielen Dank! Ihre Nachricht wurde erfolgreich gesendet.');
+      
+      setTimeout(() => {
           setFormData({
-            name: '', email: '', phone: '', inquiryType: '', address: '', message: '', preferredDate: ''
+            name: '', email: '', phone: '', inquiryType: '', 
+            addressComponents: { street: '', streetNumber: '', postalCode: '', city: '' },
+            message: '', preferredDate: ''
           });
-          setAddressValue(null);
           setIsSubmitted(false);
         }, 3000);
-        
-      } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error('Fehler beim Senden der Nachricht. Bitte versuchen Sie es erneut.');
-      } finally {
-        setIsSubmitting(false);
-      }
-    }, 1000);
+
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error('Fehler beim Senden der Nachricht. Bitte versuchen Sie es erneut.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      addressComponents: {
+        ...prev.addressComponents,
+        [name]: value
+      }
+    }));
   };
 
   const inquiryTypes = [
@@ -79,19 +95,15 @@ export default function Contact() {
     <section id="contact" className="py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            Kontakt aufnehmen
-          </h2>
+          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">Kontakt aufnehmen</h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Haben Sie Fragen oder möchten Sie ein unverbindliches Angebot? Wir freuen uns auf Ihre Nachricht!
           </p>
         </div>
-
         <div className="grid lg:grid-cols-2 gap-12 items-stretch">
           <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl flex flex-col justify-center">
             <div className="elfsight-app-43d5de15-9eed-486d-9af5-31f916ec9032" data-elfsight-app-lazy></div>
           </div>
-
           <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl">
             {isSubmitted ? (
               <div className="text-center py-12 flex flex-col justify-center items-center h-full">
@@ -102,76 +114,56 @@ export default function Contact() {
                 </p>
               </div>
             ) : (
-              <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-6 flex flex-col h-full">
-                <div className="grid md:grid-cols-2 gap-6">
+              <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-4 flex flex-col h-full">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">Name *</label>
-                    <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" placeholder="Ihr vollständiger Name" />
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">Name *</label>
+                    <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">E-Mail *</label>
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" placeholder="ihre.email@beispiel.de" />
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">E-Mail *</label>
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]" />
                   </div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-6">
+                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">Telefon</label>
-                    <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" placeholder="+49 (0) 123 456 789" />
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">Telefon</label>
+                    <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">Art der Anfrage *</label>
-                    <select name="inquiryType" value={formData.inquiryType} onChange={handleChange} required className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors">
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">Art der Anfrage *</label>
+                    <select name="inquiryType" value={formData.inquiryType} onChange={handleChange} required className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]">
                       <option value="">-- Bitte wählen --</option>
                       {inquiryTypes.map((type) => (<option key={type} value={type}>{type}</option>))}
                     </select>
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">Bevorzugter Termin</label>
-                  <input type="datetime-local" name="preferredDate" value={formData.preferredDate} onChange={handleChange} className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" />
+                <div className="grid grid-cols-5 gap-2">
+                  <div className="col-span-3">
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">Straße *</label>
+                    <input type="text" name="street" value={formData.addressComponents.street} onChange={handleAddressChange} required className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]" />
+                  </div>
+                  <div className="col-span-2">
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">Nr. *</label>
+                    <input type="text" name="streetNumber" value={formData.addressComponents.streetNumber} onChange={handleAddressChange} required className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]" />
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">Adresse *</label>
-                  <GooglePlacesAutocomplete
-                                        apiKey={import.meta.env.VITE_GOOGLE_PLACES_API_KEY}
-                    apiOptions={{ language: 'de' }}
-                    selectProps={{
-                      value: addressValue,
-                      onChange: (newValue) => {
-                        setAddressValue(newValue);
-                        setFormData(prev => ({ ...prev, address: newValue?.label || '' }));
-                      },
-                      placeholder: 'Beginnen Sie mit der Eingabe Ihrer Adresse...',
-                      styles: {
-                        input: (provided) => ({ ...provided, padding: '1rem', borderRadius: '0.75rem', backgroundColor: '#374151', color: 'white' }),
-                        control: (provided) => ({ ...provided, backgroundColor: '#374151', border: '1px solid #4b5563', borderRadius: '0.75rem' }),
-                        option: (provided, state) => ({ ...provided, backgroundColor: state.isFocused ? '#1f2937' : '#374151', color: 'white' }),
-                        menu: (provided) => ({ ...provided, backgroundColor: '#374151' }),
-                        singleValue: (provided) => ({ ...provided, color: 'white' }),
-                      },
-                    }}
-                    autocompletionRequest={{
-                      bounds: [{ lat: 54.5, lng: 5.9 }, { lat: 47.3, lng: 15.1 }],
-                      componentRestrictions: { country: 'de' },
-                    }}
-                  />
+                <div className="grid grid-cols-5 gap-2">
+                  <div className="col-span-2">
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">PLZ *</label>
+                    <input type="text" name="postalCode" value={formData.addressComponents.postalCode} onChange={handleAddressChange} required className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]" />
+                  </div>
+                  <div className="col-span-3">
+                    <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">Stadt *</label>
+                    <input type="text" name="city" value={formData.addressComponents.city} onChange={handleAddressChange} required className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white h-[46px]" />
+                  </div>
                 </div>
                 <div className="flex-grow flex flex-col">
-                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">Nachricht *</label>
-                  <textarea name="message" value={formData.message} onChange={handleChange} required className="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors resize-none flex-grow" placeholder="Beschreiben Sie Ihr Anliegen oder Projekt..." />
+                  <label className="block text-sm font-semibold text-gray-900 dark:text-white mb-1">Nachricht *</label>
+                  <textarea name="message" value={formData.message} onChange={handleChange} required className="w-full p-3 border dark:border-gray-600 rounded-lg dark:bg-gray-700 flex-grow resize-none dark:text-white" />
                 </div>
-                <button type="submit" disabled={isSubmitting} className="w-full bg-green-600 text-white py-4 px-8 rounded-xl font-semibold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl">
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Wird gesendet...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-5 w-5" />
-                      <span>Nachricht senden</span>
-                    </>
-                  )}
+                <button type="submit" disabled={isSubmitting} className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold">
+                  {isSubmitting ? 'Wird gesendet...' : <div className="flex items-center justify-center"><Send className="h-5 w-5 mr-2" /> Nachricht senden</div>}
                 </button>
               </form>
             )}
@@ -217,4 +209,3 @@ export default function Contact() {
     </section>
   );
 }
-
