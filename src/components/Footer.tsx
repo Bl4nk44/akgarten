@@ -18,7 +18,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-12 w-auto" />
+              <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-20 w-auto" />
               <span className="text-xl font-bold">AK Hausmeisterservice</span>
             </div>
             <p className="text-green-200 leading-relaxed">
