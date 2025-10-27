@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
+import imageCompression from 'browser-image-compression';
+import { Bot } from 'lucide-react';
 
 interface Message {
   text: string;
   sender: 'user' | 'bot';
+  image?: string;
 }
 
 const GARDEN_SYSTEM_PROMPT_DE = `Du bist ein erfahrener Experte für Gartenbau und Pflanzen mit Spezialisierung auf:
@@ -31,12 +34,15 @@ Dein Ton: freundlich, hilfsbereit, professionell, ermutigend`;
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { sender: 'bot', text: "Hallo! Ich bin Ihr Gartenassistent. Womit kann ich Ihnen heute helfen?" }
+    { sender: 'bot', text: "Hallo! Ich bin Ihr AI Gartenassistent. Womit kann ich Ihnen heute helfen?" }
   ]);
   const [input, setInput] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,53 +50,94 @@ const ChatBot = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const toggleChat = () => setIsOpen(!isOpen);
-  const toggleMaximize = () => setIsMaximized(!isMaximized);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(selectedFile, options);
+        setFile(compressedFile);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreview(reader.result as string);
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        setMessages(prev => [...prev, { text: "Fehler bei der Bildkomprimierung.", sender: 'bot' }]);
+      }
+    }
+  };
 
   const handleSend = async () => {
-    if (input.trim() === '') return;
+    if ((input.trim() === '' && !file) || isLoading) return;
 
-    const userMessage: Message = { text: input, sender: 'user' };
+    setIsLoading(true);
+    const userMessageText = input;
+    let userMessage: Message = { text: userMessageText, sender: 'user' };
+    
+    if (preview) {
+      userMessage.image = preview;
+    }
+    
     setMessages(prev => [...prev, userMessage]);
     setInput('');
+    setFile(null);
+    setPreview(null);
 
-    const apiMessages = [
-      { role: 'system', content: GARDEN_SYSTEM_PROMPT_DE },
-      ...messages.slice(-5).map(msg => ({
-        role: msg.sender === 'bot' ? 'assistant' : 'user',
-        content: msg.text
-      })),
-      { role: 'user', content: input }
-    ];
-
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: apiMessages }),
-    });
-
-    if (!response.ok || !response.body) {
-      setMessages(prev => [...prev, { text: "Entschuldigung, ein Fehler ist aufgetreten.", sender: 'bot' }]);
-      return;
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let botMessage = '';
-
-    setMessages(prev => [...prev, { text: "...", sender: 'bot' }]);
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      botMessage += decoder.decode(value, { stream: true });
-      setMessages(prev => {
-        const newMessages = [...prev];
-        newMessages[newMessages.length - 1].text = botMessage;
-        return newMessages;
+    const toBase64 = (file: File): Promise<string> =>
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = error => reject(error);
       });
+
+    try {
+      const apiMessages: any[] = [
+        { role: 'system', content: GARDEN_SYSTEM_PROMPT_DE },
+        ...messages.slice(-5).map(msg => ({
+          role: msg.sender === 'bot' ? 'assistant' : 'user',
+          content: msg.text
+        })),
+      ];
+      
+      const userContent: any[] = [{ type: 'text', text: userMessageText }];
+      if (file) {
+        const base64Image = await toBase64(file);
+        userContent.push({ type: 'image_url', image_url: { url: base64Image } });
+      }
+      
+      apiMessages.push({ role: 'user', content: userContent });
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: apiMessages }),
+      });
+
+      if (!response.ok || !response.body) {
+        setMessages(prev => [...prev, { text: "Entschuldigung, ein Fehler ist aufgetreten.", sender: 'bot' }]);
+        return;
+      }
+
+      const data = await response.json();
+      const botMessage = data.text || "Keine Antwort erhalten.";
+      
+      setMessages(prev => [...prev, { text: botMessage, sender: 'bot' }]);
+    } catch (error) {
+      console.error("Error in handleSend:", error);
+      setMessages(prev => [...prev, { text: "Ein schwerwiegender Fehler ist aufgetreten.", sender: 'bot' }]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -106,19 +153,13 @@ const ChatBot = () => {
         </svg>
       </button>
       {isOpen && (
-        <div className={`fixed ${isMaximized ? 'bottom-5 right-5 w-[500px] h-[70vh]' : 'bottom-20 right-5 w-80 h-96'} bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex flex-col z-50 transition-all duration-300`}>
-          <div className="p-4 bg-green-800 text-white font-bold rounded-t-lg flex justify-between items-center">
-            <span>Gartenassistent</span>
+        <div className="fixed bottom-20 right-5 w-96 h-[500px] min-w-[350px] min-h-[400px] bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex flex-col z-50 transition-colors duration-300 resize-both overflow-auto">
+          <div className="p-4 bg-green-800 text-white font-bold rounded-t-lg flex justify-between items-center cursor-move">
+            <div className="flex items-center space-x-2">
+              <Bot className="animate-wiggle" />
+              <span>AI Gartenassistent</span>
+            </div>
             <div>
-              <button onClick={toggleMaximize} className="text-white hover:text-gray-300 mr-2 transition-transform duration-150 active:scale-95" aria-label={isMaximized ? "Minimize Chat" : "Maximize Chat"}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  {isMaximized ? (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20H4v-6M14 4h6v6M20 4L4 20" />
-                  ) : (
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4h4M20 16v4h-4M4 20l8-8 8 8M20 4l-8 8-8-8" />
-                  )}
-                </svg>
-              </button>
               <button onClick={toggleChat} className="text-white hover:text-gray-300 transition-transform duration-150 active:scale-95" aria-label="Close Chat">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -130,39 +171,76 @@ const ChatBot = () => {
             {messages.map((msg, index) => (
               <div key={index} className={`my-2 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                 <span className={`inline-block p-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-600' : 'bg-gray-700'} text-white`}>
+                  {msg.image && <img src={msg.image} alt="User upload" className="max-w-xs rounded mb-2" />}
                   {msg.text}
                 </span>
               </div>
             ))}
+            {isLoading && (
+              <div className="my-2 text-left">
+                <span className="inline-block p-3 rounded-lg bg-gray-700 text-white">
+                  <div className="flex items-center justify-center space-x-1">
+                    <div className="w-2 h-2 bg-gray-300 rounded-full animate-pulse [animation-delay:-0.3s]"></div>
+                    <div className="w-2 h-2 bg-gray-300 rounded-full animate-pulse [animation-delay:-0.15s]"></div>
+                    <div className="w-2 h-2 bg-gray-300 rounded-full animate-pulse"></div>
+                  </div>
+                </span>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
-          <div className="p-2 border-t border-gray-700 flex items-center">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-              className="flex-1 bg-gray-800 text-white p-2 rounded-lg focus:outline-none"
-              placeholder="Nachricht eingeben..."
-            />
-            <button
-              onClick={() => alert('Dateianhang in Kürze verfügbar!')}
-              className="p-2 text-gray-400 hover:text-white transition-transform duration-150 active:scale-95"
-              aria-label="Attach File"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-              </svg>
-            </button>
-            <button
-              onClick={handleSend}
-              className="p-2 text-green-500 hover:text-green-400 transition-transform duration-150 active:scale-95"
-              aria-label="Send Message"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-            </button>
+          <div className="p-2 border-t border-gray-700">
+            {preview && (
+              <div className="relative inline-block mb-2">
+                <img src={preview} alt="Preview" className="h-20 w-20 object-cover rounded" />
+                <button 
+                  onClick={() => { setFile(null); setPreview(null); }}
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 text-xs"
+                  disabled={isLoading}
+                >
+                  X
+                </button>
+              </div>
+            )}
+            <div className="flex items-center">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                className="flex-1 bg-gray-800 text-white p-2 rounded-lg focus:outline-none disabled:opacity-50"
+                placeholder="Nachricht eingeben..."
+                disabled={isLoading}
+              />
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                className="hidden" 
+                accept="image/*"
+                disabled={isLoading}
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="p-2 text-gray-400 hover:text-white transition-transform duration-150 active:scale-95 disabled:opacity-50"
+                aria-label="Attach File"
+                disabled={isLoading}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+              </button>
+              <button
+                onClick={handleSend}
+                className="p-2 text-green-500 hover:text-green-400 transition-transform duration-150 active:scale-95 disabled:opacity-50"
+                aria-label="Send Message"
+                disabled={isLoading}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -171,5 +249,3 @@ const ChatBot = () => {
 };
 
 export default ChatBot;
-
-
