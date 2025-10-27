@@ -157,7 +157,7 @@ const ChatBot = () => {
         </svg>
       </button>
       {isOpen && (
-        <div className={`fixed ${isMaximized ? 'bottom-5 right-5 w-[500px] h-[70vh]' : 'bottom-20 right-5 w-96 h-[500px]'} bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex flex-col z-50 transition-all duration-300`}>
+        <div className={`fixed ${isMaximized ? 'inset-5' : 'bottom-20 right-5 w-96 h-[500px]'} bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex flex-col z-50 transition-all duration-300`}>
           <div className="p-4 bg-green-800 text-white font-bold rounded-t-lg flex justify-between items-center cursor-move">
             <div className="flex items-center space-x-2">
               <Bot className="animate-wiggle" />
