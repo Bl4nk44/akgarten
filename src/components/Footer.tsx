@@ -1,61 +1,5 @@
-import { useState, useEffect } from 'react';
 import { HashLink as Link } from 'react-router-hash-link';
-import { Mail, Phone, MapPin, Star } from 'lucide-react';
-
-const testimonials = [
-  {
-    name: "Maria S.",
-    rating: 5,
-    text: "Absolut professionell! Mein Garten sieht besser aus als je zuvor. Pünktlich, freundlich und sehr kompetent. Sehr zu empfehlen!"
-  },
-  {
-    name: "Jürgen K.",
-    rating: 5,
-    text: "Vom ersten Kontakt bis zur Fertigstellung war alles perfekt. Super Arbeit, das Team hat meine Erwartungen übertroffen."
-  },
-  {
-    name: "Helga W.",
-    rating: 4,
-    text: "Gute Beratung und saubere Ausführung der Arbeiten. Ein kleiner Abzug für eine leichte Verzögerung, aber das Ergebnis überzeugt."
-  },
-  {
-    name: "Thomas B.",
-    rating: 5,
-    text: "Zuverlässig und mit viel Liebe zum Detail. Man merkt, dass hier Profis am Werk sind, die ihren Job lieben. Jederzeit wieder!"
-  }
-];
-
-const TestimonialCarousel = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex(prevIndex => (prevIndex + 1) % testimonials.length);
-    }, 5000); // Zmiana co 5 sekund
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const currentTestimonial = testimonials[currentIndex];
-
-  return (
-    <div key={currentIndex} className="animate-fadeIn">
-      <h3 className="text-lg font-semibold mb-4">Kundenbewertungen</h3>
-      <div className="space-y-3">
-        <div className="flex items-center space-x-1">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={`h-5 w-5 ${i < currentTestimonial.rating ? 'text-yellow-400 fill-current' : 'text-gray-400'}`}
-            />
-          ))}
-        </div>
-        <p className="text-green-200 italic">"{currentTestimonial.text}"</p>
-        <p className="text-right font-medium text-white">- {currentTestimonial.name}</p>
-      </div>
-    </div>
-  );
-};
+import { Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -83,7 +27,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-                    <div>
+          <div>
             <h3 className="text-lg font-semibold mb-4">Schnellzugriff</h3>
             <ul className="space-y-2">
               <li><Link smooth to="/#home" className="text-green-200 hover:text-white transition-colors">Startseite</Link></li>
@@ -95,9 +39,16 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Testimonials */}
+          {/* Services */}
           <div>
-            <TestimonialCarousel />
+            <h3 className="text-lg font-semibold mb-4">Unsere Leistungen</h3>
+            <ul className="space-y-2">
+              <li><span className="text-green-200">Gartenpflege</span></li>
+              <li><span className="text-green-200">Gartenplanung</span></li>
+              <li><span className="text-green-200">Baumpflege</span></li>
+              <li><span className="text-green-200">Bewässerungssysteme</span></li>
+              <li><span className="text-green-200">Gartengestaltung</span></li>
+            </ul>
           </div>
 
           {/* Contact Info */}

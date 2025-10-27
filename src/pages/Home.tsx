@@ -5,6 +5,7 @@ import Services from '../components/Services';
 import Widgets from '../components/Widgets';
 import Gallery from '../components/Gallery';
 import Contact from '../components/Contact';
+import Testimonials from '../components/Testimonials';
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <Widgets />
       <Gallery />
       <Contact />
+      <Testimonials />
     </>
   );
 }
