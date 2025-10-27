@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
@@ -78,15 +78,15 @@ export default function Footer() {
               © {currentYear} AK Hausmeisterservice. Alle Rechte vorbehalten.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-green-300 hover:text-white text-sm transition-colors">
+              <Link to="/datenschutz" className="text-green-300 hover:text-white text-sm transition-colors">
                 Datenschutz
-              </a>
-              <a href="#" className="text-green-300 hover:text-white text-sm transition-colors">
+              </Link>
+              <Link to="/impressum" className="text-green-300 hover:text-white text-sm transition-colors">
                 Impressum
-              </a>
-              <a href="#" className="text-green-300 hover:text-white text-sm transition-colors">
+              </Link>
+              <Link to="/agb" className="text-green-300 hover:text-white text-sm transition-colors">
                 AGB
-              </a>
+              </Link>
             </div>
           </div>
         </div>
