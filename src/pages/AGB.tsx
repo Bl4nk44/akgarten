@@ -1,15 +1,11 @@
 import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 export default function AGB() {
   return (
-    <div className="dark min-h-screen bg-gray-900 text-white transition-colors duration-300">
-      <Header />
-      <main className="container mx-auto px-4 py-8 pt-24">
-        <div className="bg-gray-800 rounded-xl shadow-2xl p-8 md:p-12 lg:p-16">
-          <article className="prose prose-invert mx-auto">
-            <h1 className="text-center">Allgemeine Geschäftsbedingungen (AGB)</h1>
+    <main className="container mx-auto px-4 py-8 pt-24">
+      <div className="bg-gray-800 rounded-xl shadow-2xl p-8 md:p-12 lg:p-16">
+        <article className="prose prose-invert mx-auto">
+          <h1 className="text-center">Allgemeine Geschäftsbedingungen (AGB)</h1>
 
             <h2>§ 1 Geltungsbereich</h2>
             <p>1. Diese Allgemeinen Geschäftsbedingungen gelten für alle Geschäftsbeziehungen und Verträge im Zusammenhang mit der Erbringung gärtnerischer Dienstleistungen durch:</p>
@@ -154,10 +150,8 @@ export default function AGB() {
               <br />
               Telefon: 015206136610
             </p>
-          </article>
-        </div>
-      </main>
-      <Footer />
-    </div>
+        </article>
+      </div>
+    </main>
   );
 }

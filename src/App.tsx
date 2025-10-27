@@ -7,6 +7,7 @@ import Datenschutz from './pages/Datenschutz';
 import Impressum from './pages/Impressum';
 import CookieConsent from './components/CookieConsent';
 import ChatBot from './components/ChatBot';
+import Layout from './components/Layout';
 
 export default function App() {
   useEffect(() => {
@@ -14,16 +15,18 @@ export default function App() {
   }, []);
 
   return (
-    <div className="dark min-h-screen transition-colors duration-300">
+    <>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/agb" element={<AGB />} />
-        <Route path="/datenschutz" element={<Datenschutz />} />
-        <Route path="/impressum" element={<Impressum />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="agb" element={<AGB />} />
+          <Route path="datenschutz" element={<Datenschutz />} />
+          <Route path="impressum" element={<Impressum />} />
+        </Route>
       </Routes>
       <Toaster position="top-right" />
       <CookieConsent />
       <ChatBot />
-    </div>
+    </>
   );
 }
