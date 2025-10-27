@@ -4,12 +4,16 @@ import Footer from '../components/Footer';
 
 export default function AGB() {
   return (
-    <div className="dark min-h-screen transition-colors duration-300">
+    <div className="dark min-h-screen bg-gray-900 text-white transition-colors duration-300">
       <Header />
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold">AGB</h1>
-        <p className="mt-4">Hier kommt der Text für die AGB hin.</p>
-      </div>
+      <main className="container mx-auto px-4 py-8 pt-24">
+        <div className="bg-gray-800 rounded-xl shadow-2xl p-8 md:p-12 lg:p-16">
+          <article className="prose prose-invert mx-auto">
+            <h1 className="text-center">AGB</h1>
+            <p className="text-center">Hier kommt der Text für die AGB hin.</p>
+          </article>
+        </div>
+      </main>
       <Footer />
     </div>
   );
