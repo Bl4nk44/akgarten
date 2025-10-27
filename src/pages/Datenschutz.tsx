@@ -7,8 +7,9 @@ export default function Datenschutz() {
     <div className="dark min-h-screen bg-gray-900 text-white transition-colors duration-300">
       <Header />
       <main className="container mx-auto px-4 py-8 pt-24">
-        <article className="prose prose-invert max-w-none">
-          <h1 className="text-center">Datenschutzerklärung</h1>
+        <div className="bg-gray-800 rounded-xl shadow-2xl p-8 md:p-12 lg:p-16">
+          <article className="prose prose-invert mx-auto">
+            <h1 className="text-center">Datenschutzerklärung</h1>
 
           <h2>1. Verantwortlicher</h2>
           <p>
@@ -105,6 +106,7 @@ export default function Datenschutz() {
           </p>
           <p>Weitere Informationen dazu finden Sie in unserem Cookie-Banner oder erhalten Sie gerne auf Anfrage.</p>
         </article>
+        </div>
       </main>
       <Footer />
     </div>
