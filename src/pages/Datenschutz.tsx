@@ -6,9 +6,9 @@ export default function Datenschutz() {
   return (
     <div className="dark min-h-screen bg-gray-900 text-white transition-colors duration-300">
       <Header />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 pt-24">
         <article className="prose prose-invert max-w-none">
-          <h1>Datenschutzerklärung</h1>
+          <h1 className="text-center">Datenschutzerklärung</h1>
 
           <h2>1. Verantwortlicher</h2>
           <p>
