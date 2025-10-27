@@ -10,32 +10,100 @@ export default function Datenschutz() {
         <article className="prose prose-invert max-w-none">
           <h1>Datenschutzerklärung</h1>
 
-          <h2>1. Datenschutz auf einen Blick</h2>
-          <h3>Allgemeine Hinweise</h3>
-          <p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Ausführliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgeführten Datenschutzerklärung.</p>
+          <h2>1. Verantwortlicher</h2>
+          <p>
+            Verantwortlich für die Datenverarbeitung auf dieser Website ist:
+            <br />
+            Andrzej Kaczmarczyk
+            <br />
+            Mainzerstraße 114
+            <br />
+            55545 Bad Kreuznach
+            <br />
+            Deutschland
+            <br />
+            Telefon: [Bitte ergänzen]
+            <br />
+            E-Mail: [Bitte ergänzen]
+            <br />
+            Website: www.akgarten.com
+          </p>
 
-          <h3>Datenerfassung auf dieser Website</h3>
-          <h4>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</h4>
-          <p>Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten können Sie dem Impressum dieser Website entnehmen.</p>
-          <h4>Wie erfassen wir Ihre Daten?</h4>
-          <p>Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z. B. um Daten handeln, die Sie in ein Kontaktformular eingeben.</p>
-          <p>Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z. B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website betreten.</p>
-          <h4>Wofür nutzen wir Ihre Daten?</h4>
-          <p>Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gewährleisten. Andere Daten können zur Analyse Ihres Nutzerverhaltens verwendet werden.</p>
-          <h4>Welche Rechte haben Sie bezüglich Ihrer Daten?</h4>
-          <p>Sie haben jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung oder Löschung dieser Daten zu verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt haben, können Sie diese Einwilligung jederzeit für die Zukunft widerrufen. Außerdem haben Sie das Recht, unter bestimmten Umständen die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.</p>
-          <p>Hierzu sowie zu weiteren Fragen zum Thema Datenschutz können Sie sich jederzeit an uns wenden.</p>
+          <h2>2. Erhebung und Speicherung personenbezogener Daten sowie Art und Zweck von deren Verwendung</h2>
+          <h3>a) Beim Besuch der Website:</h3>
+          <p>
+            Beim Aufrufen unserer Website werden durch den von Ihnen verwendeten Browser automatisch Informationen an den Server unserer Website gesendet. Diese Informationen werden temporär in einem sogenannten Logfile gespeichert. Folgende Informationen werden dabei ohne Ihr Zutun erfasst und bis zur automatisierten Löschung gespeichert:
+          </p>
+          <ul>
+            <li>IP-Adresse des anfragenden Rechners</li>
+            <li>Datum und Uhrzeit des Zugriffs</li>
+            <li>Name und URL der abgerufenen Datei</li>
+            <li>Website, von der aus der Zugriff erfolgt (Referrer-URL)</li>
+            <li>Verwendeter Browser und ggf. das Betriebssystem Ihres Rechners sowie der Name Ihres Access-Providers</li>
+          </ul>
+          <p>Die genannten Daten werden durch uns zu folgenden Zwecken verarbeitet:</p>
+          <ul>
+            <li>Gewährleistung eines reibungslosen Verbindungsaufbaus der Website</li>
+            <li>Gewährleistung einer komfortablen Nutzung unserer Website</li>
+            <li>Auswertung der Systemsicherheit und -stabilität sowie</li>
+            <li>zu weiteren administrativen Zwecken</li>
+          </ul>
+          <p>
+            Die Rechtsgrundlage für die Datenverarbeitung ist Art. 6 Abs. 1 S. 1 lit. f DSGVO. Unser berechtigtes Interesse folgt aus den oben aufgelisteten Zwecken zur Datenerhebung. In keinem Fall verwenden wir die erhobenen Daten zu dem Zweck, Rückschlüsse auf Ihre Person zu ziehen.
+          </p>
 
-          <h2>2. Hosting</h2>
-          <p>Diese Website wird bei einem externen Dienstleister gehostet (Hoster). Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Hierbei kann es sich v. a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Vertragsdaten, Kontaktdaten, Namen, Websitezugriffe und sonstige Daten, die über eine Website generiert werden, handeln.</p>
-          <p>Der Einsatz des Hosters erfolgt zum Zwecke der Vertragserfüllung gegenüber unseren potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO).</p>
-          <p>Unser Hoster wird Ihre Daten nur insoweit verarbeiten, wie dies zur Erfüllung seiner Leistungspflichten erforderlich ist und unsere Weisungen in Bezug auf diese Daten befolgen.</p>
+          <h3>b) Kontaktformular / E-Mail-Kontakt:</h3>
+          <p>
+            Wenn Sie uns per Kontaktformular oder E-Mail Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular bzw. der E-Mail inklusive der von Ihnen angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter. Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) und/oder auf unseren berechtigten Interessen (Art. 6 Abs. 1 lit. f DSGVO).
+          </p>
 
-          <h2>3. Allgemeine Hinweise und Pflichtinformationen</h2>
-          <h3>Datenschutz</h3>
-          <p>Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
-          <p>Wenn Sie diese Website benutzen, werden verschiedene personenbezogene Daten erhoben. Personenbezogene Daten sind Daten, mit denen Sie persönlich identifiziert werden können. Die vorliegende Datenschutzerklärung erläutert, welche Daten wir erheben und wofür wir sie nutzen. Sie erläutert auch, wie und zu welchem Zweck das geschieht.</p>
-          <p>Wir weisen darauf hin, dass die Datenübertragung im Internet (z. B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Sc</p>
+          <h2>3. Weitergabe von Daten</h2>
+          <p>Eine Übermittlung Ihrer persönlichen Daten an Dritte zu anderen als den im Folgenden aufgeführten Zwecken findet nicht statt. Wir geben Ihre persönlichen Daten nur an Dritte weiter, wenn:</p>
+          <ul>
+            <li>Sie Ihre ausdrückliche Einwilligung dazu erteilt haben gemäß Art. 6 Abs. 1 S. 1 lit. a DSGVO,</li>
+            <li>die Weitergabe nach Art. 6 Abs. 1 S. 1 lit. f DSGVO zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen erforderlich ist und kein Grund zur Annahme besteht, dass Sie ein überwiegendes schutzwürdiges Interesse an der Nichtweitergabe Ihrer Daten haben,</li>
+            <li>für den Fall, dass für die Weitergabe nach Art. 6 Abs. 1 S. 1 lit. c DSGVO eine gesetzliche Verpflichtung besteht,</li>
+            <li>dies gesetzlich zulässig und nach Art. 6 Abs. 1 S. 1 lit. b DSGVO für die Abwicklung von Vertragsverhältnissen mit Ihnen erforderlich ist.</li>
+          </ul>
+
+          <h2>4. Ihre Rechte</h2>
+          <p>Sie haben das Recht:</p>
+          <ul>
+            <li>gemäß Art. 15 DSGVO Auskunft über Ihre von uns verarbeiteten personenbezogenen Daten zu verlangen,</li>
+            <li>gemäß Art. 16 DSGVO unverzüglich die Berichtigung unrichtiger oder Vervollständigung Ihrer bei uns gespeicherten personenbezogenen Daten zu verlangen,</li>
+            <li>gemäß Art. 17 DSGVO die Löschung Ihrer bei uns gespeicherten personenbezogenen Daten zu verlangen, soweit nicht die Verarbeitung zur Erfüllung einer rechtlichen Verpflichtung oder zur Ausübung öffentlicher Aufgaben erforderlich ist,</li>
+            <li>gemäß Art. 18 DSGVO die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen,</li>
+            <li>gemäß Art. 20 DSGVO Ihre personenbezogenen Daten, die Sie uns bereitgestellt haben, in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten oder die Übermittlung an einen anderen Verantwortlichen zu verlangen,</li>
+            <li>gemäß Art. 7 Abs. 3 DSGVO Ihre einmal erteilte Einwilligung jederzeit zu widerrufen,</li>
+            <li>gemäß Art. 77 DSGVO sich bei einer Aufsichtsbehörde zu beschweren.</li>
+          </ul>
+
+          <h2>5. Datensicherheit</h2>
+          <p>
+            Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird. Darüber hinaus setzen wir geeignete technische und organisatorische Sicherheitsmaßnahmen ein, um Ihre Daten gegen zufällige oder vorsätzliche Manipulationen, teilweisen oder vollständigen Verlust, Zerstörung oder gegen den unbefugten Zugriff Dritter zu schützen.
+          </p>
+
+          <h2>6. Aktualität und Änderung dieser Datenschutzerklärung</h2>
+          <p>
+            Diese Datenschutzerklärung ist aktuell gültig und hat den Stand Oktober 2025. Durch die Weiterentwicklung unserer Website und der Angebote darüber oder aufgrund geänderter gesetzlicher beziehungsweise behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern. Die jeweils aktuelle Datenschutzerklärung kann jederzeit auf der Website unter www.akgarten.com abgerufen und ausgedruckt werden.
+          </p>
+
+          <h2>7. Cookies</h2>
+          <p>
+            Unsere Website verwendet sogenannte Cookies. Cookies sind kleine Textdateien, die auf Ihrem Endgerät gespeichert werden und die Ihr Browser speichert. Sie dienen dazu, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen.
+          </p>
+          <p>Es gibt zwei verschiedene Kategorien von Cookies:</p>
+          <ul>
+            <li>Technisch notwendige Cookies, die für den Betrieb der Website zwingend erforderlich sind und ohne Ihre Einwilligung gesetzt werden dürfen (z.B. zur Sicherstellung der Funktionalität, Spracheinstellungen, Warenkorbfunktion).</li>
+            <li>Technisch nicht notwendige Cookies (wie Tracking-, Analyse- oder Marketing-Cookies), die personenbezogene Daten verarbeiten und eine ausdrückliche Einwilligung der Nutzerinnen und Nutzer erfordern. Diese Cookies werden erst nach Ihrer ausdrücklichen Zustimmung über unser Cookie-Banner gesetzt.</li>
+          </ul>
+          <p>
+            Sie können Ihre Cookie-Einstellungen jederzeit über das Cookie-Banner bzw. die Einstellungen in Ihrem Browser anpassen. Bereits gespeicherte Cookies können in den Systemeinstellungen Ihres Browsers gelöscht werden.
+          </p>
+          <p>
+            Rechtsgrundlage für den Einsatz von technisch notwendigen Cookies ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse), für technisch nicht notwendige Cookies Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).
+          </p>
+          <p>Weitere Informationen dazu finden Sie in unserem Cookie-Banner oder erhalten Sie gerne auf Anfrage.</p>
         </article>
       </main>
       <Footer />
