@@ -46,12 +46,17 @@ module.exports = {
         'slow-spin': {
           'from': { transform: 'rotate(0deg)' },
           'to': { transform: 'rotate(360deg)' },
-        }
+        },
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         wiggle: 'wiggle 1s ease-in-out infinite',
         drift: 'drift 20s ease-in-out infinite alternate',
         'slow-spin': 'slow-spin 3s linear infinite',
+        fadeIn: 'fadeIn 0.5s ease-in-out',
       },
       spacing: {
         "form-field": "16px",
