@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 
 export default function Datenschutz() {
   return (
-    <div className="dark min-h-screen transition-colors duration-300">
+    <div className="dark min-h-screen bg-gray-900 text-white transition-colors duration-300">
       <Header />
       <main className="container mx-auto px-4 py-8">
         <article className="prose prose-invert max-w-none">
