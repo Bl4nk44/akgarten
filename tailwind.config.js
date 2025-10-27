@@ -42,11 +42,16 @@ module.exports = {
           '25%': { transform: 'translate(20px, -15px)' },
           '50%': { transform: 'translate(-15px, 10px)' },
           '75%': { transform: 'translate(10px, 20px)' },
+        },
+        'slow-spin': {
+          'from': { transform: 'rotate(0deg)' },
+          'to': { transform: 'rotate(360deg)' },
         }
       },
       animation: {
         wiggle: 'wiggle 1s ease-in-out infinite',
         drift: 'drift 20s ease-in-out infinite alternate',
+        'slow-spin': 'slow-spin 3s linear infinite',
       },
       spacing: {
         "form-field": "16px",
@@ -54,5 +59,7 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };

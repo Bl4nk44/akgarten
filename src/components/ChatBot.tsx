@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import imageCompression from 'browser-image-compression';
 import { Bot } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface Message {
   text: string;
@@ -170,10 +172,21 @@ const ChatBot = () => {
           <div className="flex-1 p-4 overflow-y-auto">
             {messages.map((msg, index) => (
               <div key={index} className={`my-2 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                <span className={`inline-block p-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-600' : 'bg-gray-700'} text-white`}>
-                  {msg.image && <img src={msg.image} alt="User upload" className="max-w-xs rounded mb-2" />}
-                  {msg.text}
-                </span>
+                <div className={`inline-block p-2 rounded-lg ${msg.sender === 'user' ? 'bg-blue-600' : 'bg-gray-700'} text-white`}>
+                  {msg.sender === 'user' ? (
+                    <div>
+                      {msg.image && <img src={msg.image} alt="User upload" className="max-w-xs rounded mb-2" />}
+                      {msg.text}
+                    </div>
+                  ) : (
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      className="prose prose-sm sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-2xl prose-invert"
+                    >
+                      {msg.text}
+                    </ReactMarkdown>
+                  )}
+                </div>
               </div>
             ))}
             {isLoading && (
