@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { HashLink as Link } from 'react-router-hash-link';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,13 +14,7 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMenuOpen(false);
-  };
+  const closeMenu = () => setIsMenuOpen(false);
 
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
@@ -30,51 +25,57 @@ export default function Header() {
       <div className="container mx-auto px-4 py-2">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link to="/" onClick={closeMenu} className="flex items-center space-x-3">
             <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-20 w-auto" />
             <span className="text-xl font-bold text-gray-800 dark:text-white hidden sm:inline">
               AK Hausmeisterservice
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-2">
-            <button 
-              onClick={() => scrollToSection('home')}
+            <Link 
+              smooth 
+              to="/#home"
               className="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 overflow-hidden btn-shine"
             >
               Startseite
-            </button>
-            <button 
-              onClick={() => scrollToSection('about')}
+            </Link>
+            <Link 
+              smooth 
+              to="/#about"
               className="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 overflow-hidden btn-shine"
             >
               Über mich
-            </button>
-            <button 
-              onClick={() => scrollToSection('services')}
+            </Link>
+            <Link 
+              smooth 
+              to="/#services"
               className="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 overflow-hidden btn-shine"
             >
               Leistungen
-            </button>
-            <button 
-              onClick={() => scrollToSection('widgets')}
+            </Link>
+            <Link 
+              smooth 
+              to="/#widgets"
               className="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 overflow-hidden btn-shine"
             >
               Garten-Tools
-            </button>
-            <button 
-              onClick={() => scrollToSection('gallery')}
+            </Link>
+            <Link 
+              smooth 
+              to="/#gallery"
               className="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 overflow-hidden btn-shine"
             >
               Galerie
-            </button>
-            <button 
-              onClick={() => scrollToSection('contact')}
+            </Link>
+            <Link 
+              smooth 
+              to="/#contact"
               className="relative inline-flex h-12 items-center justify-center rounded-xl bg-green-700 px-8 font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 btn-shine"
             >
               Kontakt
-            </button>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -92,12 +93,12 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden mt-4 py-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
             <nav className="flex flex-col space-y-4 px-4">
-              <button onClick={() => scrollToSection('home')} className="text-left text-gray-700 dark:text-gray-300">Startseite</button>
-              <button onClick={() => scrollToSection('about')} className="text-left text-gray-700 dark:text-gray-300">Über mich</button>
-              <button onClick={() => scrollToSection('services')} className="text-left text-gray-700 dark:text-gray-300">Leistungen</button>
-              <button onClick={() => scrollToSection('widgets')} className="text-left text-gray-700 dark:text-gray-300">Garten-Tools</button>
-              <button onClick={() => scrollToSection('gallery')} className="text-left text-gray-700 dark:text-gray-300">Galerie</button>
-              <button onClick={() => scrollToSection('contact')} className="text-left bg-green-600 text-white px-6 py-2 rounded-full w-fit">Kontakt</button>
+              <Link smooth to="/#home" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Startseite</Link>
+              <Link smooth to="/#about" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Über mich</Link>
+              <Link smooth to="/#services" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Leistungen</Link>
+              <Link smooth to="/#widgets" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Garten-Tools</Link>
+              <Link smooth to="/#gallery" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Galerie</Link>
+              <Link smooth to="/#contact" onClick={closeMenu} className="text-left bg-green-600 text-white px-6 py-2 rounded-full w-fit">Kontakt</Link>
             </nav>
           </div>
         )}
