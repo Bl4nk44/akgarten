@@ -36,6 +36,7 @@ Dein Ton: freundlich, hilfsbereit, professionell, ermutigend`;
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [isMaximized, setIsMaximized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { sender: 'bot', text: "Hallo! Ich bin Ihr AI Gartenassistent. Womit kann ich Ihnen heute helfen?" }
@@ -55,6 +56,7 @@ const ChatBot = () => {
   }, [messages, isLoading]);
 
   const toggleChat = () => setIsOpen(!isOpen);
+  const toggleMaximize = () => setIsMaximized(!isMaximized);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -84,7 +86,7 @@ const ChatBot = () => {
 
     setIsLoading(true);
     const userMessageText = input;
-    let userMessage: Message = { text: userMessageText, sender: 'user' };
+    const userMessage: Message = { text: userMessageText, sender: 'user' };
     
     if (preview) {
       userMessage.image = preview;
@@ -100,7 +102,7 @@ const ChatBot = () => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result as string);
-        reader.onerror = error => reject(error);
+        reader.onerror = (error) => reject(new Error('File read error: ' + error));
       });
 
     try {
@@ -155,13 +157,22 @@ const ChatBot = () => {
         </svg>
       </button>
       {isOpen && (
-        <div className="fixed bottom-20 right-5 w-96 h-[500px] min-w-[350px] min-h-[400px] bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex flex-col z-50 transition-colors duration-300 resize-both overflow-auto">
+        <div className={`fixed ${isMaximized ? 'bottom-5 right-5 w-[500px] h-[70vh]' : 'bottom-20 right-5 w-96 h-[500px]'} bg-gray-900 border border-gray-700 rounded-lg shadow-xl flex flex-col z-50 transition-all duration-300`}>
           <div className="p-4 bg-green-800 text-white font-bold rounded-t-lg flex justify-between items-center cursor-move">
             <div className="flex items-center space-x-2">
               <Bot className="animate-wiggle" />
               <span>AI Gartenassistent</span>
             </div>
             <div>
+              <button onClick={toggleMaximize} className="text-white hover:text-gray-300 mr-2 transition-transform duration-150 active:scale-95" aria-label={isMaximized ? "Minimize Chat" : "Maximize Chat"}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  {isMaximized ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20H4v-6M14 4h6v6M20 4L4 20" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4h4M20 16v4h-4M4 20l8-8 8 8M20 4l-8 8-8-8" />
+                  )}
+                </svg>
+              </button>
               <button onClick={toggleChat} className="text-white hover:text-gray-300 transition-transform duration-150 active:scale-95" aria-label="Close Chat">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -179,12 +190,13 @@ const ChatBot = () => {
                       {msg.text}
                     </div>
                   ) : (
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      className="prose prose-sm sm:prose-base lg:prose-lg xl:prose-xl 2xl:prose-2xl prose-invert"
-                    >
-                      {msg.text}
-                    </ReactMarkdown>
+                    <div className="prose prose-invert max-w-none">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                      >
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
                   )}
                 </div>
               </div>
@@ -220,7 +232,7 @@ const ChatBot = () => {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                onKeyDown={(e) => { if (e.key === 'Enter') void handleSend(); }}
                 className="flex-1 bg-gray-800 text-white p-2 rounded-lg focus:outline-none disabled:opacity-50"
                 placeholder="Nachricht eingeben..."
                 disabled={isLoading}
@@ -228,7 +240,7 @@ const ChatBot = () => {
               <input 
                 type="file" 
                 ref={fileInputRef} 
-                onChange={handleFileChange} 
+                onChange={(e) => void handleFileChange(e)} 
                 className="hidden" 
                 accept="image/*"
                 disabled={isLoading}
@@ -244,7 +256,7 @@ const ChatBot = () => {
                 </svg>
               </button>
               <button
-                onClick={handleSend}
+                onClick={() => void handleSend()}
                 className="p-2 text-green-500 hover:text-green-400 transition-transform duration-150 active:scale-95 disabled:opacity-50"
                 aria-label="Send Message"
                 disabled={isLoading}
