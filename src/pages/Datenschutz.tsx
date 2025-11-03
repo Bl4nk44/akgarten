@@ -19,9 +19,9 @@ export default function Datenschutz() {
             <br />
             Deutschland
             <br />
-            Telefon: [Bitte ergänzen]
+            Telefon: 015206136610
             <br />
-            E-Mail: [Bitte ergänzen]
+            E-Mail: service@akgarten.com
             <br />
             Website: www.akgarten.com
           </p>

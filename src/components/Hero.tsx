@@ -51,22 +51,23 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right Content - Hero Image */}
-          <div className="relative">
+                    {/* Right Content - Hero Images */}
+          <div className="relative grid grid-cols-2 gap-4">
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
               <img 
-                src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="Schöner Garten mit bunten Blumen"
+                src="/1.png"
+                alt="Gartenbild 1"
                 className="w-full h-96 lg:h-[500px] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
-            
-            <div className="absolute -top-6 -left-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-wiggle z-20">
-              <div className="text-2xl">🌱</div>
-            </div>
-            <div className="absolute -bottom-6 -right-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg animate-wiggle [animation-delay:-0.5s] z-20">
-              <div className="text-2xl">🌸</div>
+            <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500 mt-8">
+              <img 
+                src="/2.png"
+                alt="Gartenbild 2"
+                className="w-full h-96 lg:h-[500px] object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
           </div>
         </div>

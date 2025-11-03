@@ -146,7 +146,7 @@ export default function AGB() {
               <br />
               55545 Bad Kreuznach
               <br />
-              E-Mail: andrzej@akgarten.com
+              E-Mail: service@akgarten.com
               <br />
               Telefon: 015206136610
             </p>

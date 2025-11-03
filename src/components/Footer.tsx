@@ -19,7 +19,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-20 w-auto" />
-              <span className="text-xl font-bold">AK Hausmeisterservice</span>
+              <span className="text-xl font-bold">AKGarten</span>
             </div>
             <p className="text-green-200 leading-relaxed">
               Ihr Partner für professionelle Gartenpflege und -gestaltung. 
@@ -57,15 +57,15 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex items-center space-x-2">
                 <MapPin className="h-5 w-5 text-green-300" />
-                <span className="text-green-200">Gartenstraße 123, 12345 Musterstadt</span>
+                <span className="text-green-200">Mainzerstraße 114, 55545 Bad Kreuznach</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-5 w-5 text-green-300" />
-                <span className="text-green-200">+49 (0) 123 456 789</span>
+                <span className="text-green-200">015206136610</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-5 w-5 text-green-300" />
-                <span className="text-green-200">info@gartenmeister.de</span>
+                <span className="text-green-200">service@akgarten.com</span>
               </div>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function Footer() {
         <div className="border-t border-green-800 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-green-300 text-sm">
-              © {currentYear} AK Hausmeisterservice. Alle Rechte vorbehalten.
+              © {currentYear} AKGarten. Alle Rechte vorbehalten.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/datenschutz" className="text-green-300 hover:text-white text-sm transition-colors">

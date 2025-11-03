@@ -23,7 +23,7 @@ export default function Impressum() {
             <p>
               Telefon: 015206136610
               <br />
-              E-Mail: andrzej@akgarten.com
+              E-Mail: service@akgarten.com
               <br />
               Website: www.akgarten.com
             </p>
@@ -32,17 +32,7 @@ export default function Impressum() {
             <p>Die Website wird betrieben und verantwortet durch:</p>
             <p>Andrzej Kaczmarczyk (Einzelunternehmer)</p>
 
-            <h3>Berufsbezeichnung und Kammer</h3>
-            <p>Bei Bedarf (je żeli prowadzisz działalność jako e.K. - eingetragener Kaufmann﻿):</p>
-            <p>
-              Registergericht: [Proszę podać sąd rejestrowy - np. Amtsgericht Bad Kreuznach]
-              <br />
-              Registernummer: [Proszę podać numer wpisu]
-            </p>
 
-            <h3>Umsatzsteuer</h3>
-            <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:</p>
-            <p>[Proszę podać Twój numer VAT-ID - np. DE XXXXXXXXXXX]</p>
 
             <h3>Verantwortlicher für journalistisch-redaktionelle Inhalte</h3>
             <p>Gemäß § 18 MStV (Medienstaatsvertrag):</p>
@@ -84,15 +74,7 @@ export default function Impressum() {
               Soweit die Inhalte auf dieser Seite nicht von uns erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem eine Urheberrechtsverletzung bemerken, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.
             </p>
 
-            <p><strong>Ważna uwaga:</strong> Bitte ergänze die folgenden Informationen, um die Impressum vollständig zu machen:﻿</p>
-            <ul>
-              <li>Telefonnummer – 015206136610</li>
-              <li>Adres e-mail – andrzej@akgarten.com</li>
-              <li>Umsatzsteuer-ID – jeśli prowadzisz działalność gospodarczą w Niemczech, musisz podać numer VAT</li>
-              <li>Status jako e.K. (eingetragener Kaufmann) – czy jesteś wpisany w rejestr handlowy (Handelsregister)?</li>
-              <li>Sąd rejestrowy i numer wpisu – jeśli jesteś wpisany do rejestru handlowego, podaj szczegóły</li>
-            </ul>
-                        <p>Te informacje są wymagane zgodnie z przepisami DDG (poprzednikami TMG). Jeśli masz pytania na temat konkretnych wymagań, mogę Ci pomóc w uzupełnieniu tych danych.​</p>
+
         </article>
       </div>
     </main>

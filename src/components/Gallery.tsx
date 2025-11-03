@@ -8,45 +8,66 @@ export default function Gallery() {
   const images = [
     {
       id: 1,
-      src: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      src: '/gallery-1.png',
       category: 'garden',
-      title: 'Moderner Hausgarten',
-      description: 'Komplette Neugestaltung eines Vorgartens mit nachhaltigen Pflanzen.'
+      title: 'Gartenprojekt 1',
+      description: 'Moderner Ansatz für Grünflächen.'
     },
     {
       id: 2,
-      src: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      src: '/gallery-2.png',
       category: 'vegetables',
-      title: 'Gemüsegarten',
-      description: 'Hochbeete für den perfekten Gemüseanbau im eigenen Garten.'
+      title: 'Gartenprojekt 2',
+      description: 'Harmonie und Natur in Einem.'
     },
     {
       id: 3,
-      src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      src: '/gallery-3.png',
       category: 'flowers',
-      title: 'Blütenpracht',
-      description: 'Farbenfrohes Staudenbeet mit ganzjähriger Blütezeit.'
+      title: 'Gartenprojekt 3',
+      description: 'Blühende Schönheit das ganze Jahr über.'
     },
     {
       id: 4,
-      src: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      src: '/gallery-4.png',
       category: 'landscape',
-      title: 'Landschaftsgestaltung',
-      description: 'Großflächige Gartenanlage mit natürlichen Elementen.'
+      title: 'Gartenprojekt 4',
+      description: 'Minimalistisches Design und Funktionalität.'
     },
     {
       id: 5,
-      src: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      src: '/gallery-5.png',
       category: 'maintenance',
-      title: 'Gartenpflege',
-      description: 'Professionelle Pflege und Wartung bestehender Anlagen.'
+      title: 'Gartenprojekt 5',
+      description: 'Professionelle Pflege bis ins kleinste Detail.'
     },
     {
       id: 6,
-      src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      src: '/gallery-6.png',
       category: 'flowers',
-      title: 'Rosengarten',
-      description: 'Klassischer Rosengarten mit verschiedenen Sorten.'
+      title: 'Gartenprojekt 6',
+      description: 'Klassik in moderner Ausführung.'
+    },
+    {
+      id: 7,
+      src: '/gallery-7.png',
+      category: 'garden',
+      title: 'Gartenprojekt 7',
+      description: 'Eine Oase der Ruhe im städtischen Trubel.'
+    },
+    {
+      id: 8,
+      src: '/gallery-8.png',
+      category: 'landscape',
+      title: 'Gartenprojekt 8',
+      description: 'Natürliche Materialien und ökologische Lösungen.'
+    },
+    {
+      id: 9,
+      src: '/gallery-9.png',
+      category: 'maintenance',
+      title: 'Gartenprojekt 9',
+      description: 'Perfektion in jedem Detail.'
     }
   ];
 

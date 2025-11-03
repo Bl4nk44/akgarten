@@ -7,42 +7,36 @@ export default function Services() {
       icon: Scissors,
       title: 'Gartenpflege',
       description: 'Regelmäßige Pflege und Wartung Ihres Gartens das ganze Jahr über.',
-      price: 'ab 45€/Stunde',
       features: ['Rasenmähen', 'Heckenschnitt', 'Unkrautentfernung', 'Bewässerung']
     },
     {
       icon: Sprout,
       title: 'Gartenplanung',
       description: 'Professionelle Planung und Design für Ihren Traumgarten.',
-      price: 'ab 200€',
-      features: ['3D-Visualisierung', 'Pflanzenauswahl', 'Layoutplanung', 'Kostenvoranschlag']
+      features: ['Pflanzenauswahl', 'Layoutplanung', 'Kostenvoranschlag']
     },
     {
       icon: TreePine,
       title: 'Baumpflege',
       description: 'Fachgerechter Baumschnitt und Baumpflege für gesunde Bäume.',
-      price: 'ab 80€/Baum',
       features: ['Kronenschnitt', 'Gesundheitscheck', 'Schädlingsbekämpfung', 'Baumfällung']
     },
     {
       icon: Flower,
       title: 'Bepflanzung',
       description: 'Auswahl und Pflanzung von Blumen, Sträuchern und Bäumen.',
-      price: 'ab 25€/m²',
       features: ['Saisonale Bepflanzung', 'Staudengärten', 'Gemüsegärten', 'Kübelbepflanzung']
     },
     {
       icon: Droplets,
       title: 'Bewässerungssysteme',
       description: 'Installation und Wartung automatischer Bewässerungsanlagen.',
-      price: 'ab 300€',
       features: ['Tropfbewässerung', 'Sprinkleranlagen', 'Smart-Steuerung', 'Wartung']
     },
     {
       icon: Shovel,
       title: 'Gartengestaltung',
       description: 'Komplette Neugestaltung und Umgestaltung von Gartenbereichen.',
-      price: 'Auf Anfrage',
       features: ['Terrassen', 'Wege', 'Teiche', 'Beleuchtung']
     }
   ];
@@ -78,10 +72,6 @@ export default function Services() {
                 {service.description}
               </p>
               
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-6">
-                {service.price}
-              </div>
-              
               <ul className="space-y-2 mb-8 flex-grow">
                 {service.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center text-gray-600 dark:text-gray-300">
@@ -91,7 +81,7 @@ export default function Services() {
                 ))}
               </ul>
               
-              <button className="relative w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors duration-300 btn-shine overflow-hidden">
+              <button className="relative w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors duration-300 btn-shine overflow-hidden mt-auto">
                 Mehr erfahren
               </button>
             </div>

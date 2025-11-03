@@ -28,7 +28,7 @@ export default function Header() {
           <Link to="/" onClick={closeMenu} className="flex items-center space-x-3">
             <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-20 w-auto" />
             <span className="text-xl font-bold text-gray-800 dark:text-white hidden sm:inline">
-              AK Hausmeisterservice
+              AKGarten
             </span>
           </Link>
 

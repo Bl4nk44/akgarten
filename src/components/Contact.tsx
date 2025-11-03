@@ -175,35 +175,29 @@ export default function Contact() {
           <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-10">
             Unsere Kontaktinformationen
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center justify-center">
             <div className="flex flex-col items-center">
               <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
                 <MapPin className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
               <h4 className="font-semibold text-gray-900 dark:text-white">Adresse</h4>
-              <p className="text-gray-600 dark:text-gray-300">Gartenstraße 123, 12345 Musterstadt</p>
+              <p className="text-gray-600 dark:text-gray-300">Mainzerstraße 114, 55545 Bad Kreuznach</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
                 <Phone className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
               <h4 className="font-semibold text-gray-900 dark:text-white">Telefon</h4>
-              <p className="text-gray-600 dark:text-gray-300">+49 (0) 123 456 789</p>
+              <p className="text-gray-600 dark:text-gray-300">015206136610</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
                 <Mail className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
               <h4 className="font-semibold text-gray-900 dark:text-white">E-Mail</h4>
-              <p className="text-gray-600 dark:text-gray-300">info@gartenmeister.de</p>
+              <p className="text-gray-600 dark:text-gray-300">service@akgarten.com</p>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-full mb-4">
-                <Clock className="h-8 w-8 text-green-600 dark:text-green-400" />
-              </div>
-              <h4 className="font-semibold text-gray-900 dark:text-white">Öffnungszeiten</h4>
-              <p className="text-gray-600 dark:text-gray-300">Mo - Fr: 8:00 - 18:00 Uhr</p>
-            </div>
+            
           </div>
         </div>
       </div>
