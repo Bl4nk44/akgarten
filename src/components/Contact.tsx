@@ -195,7 +195,7 @@ export default function Contact() {
                 <Mail className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
               <h4 className="font-semibold text-gray-900 dark:text-white">E-Mail</h4>
-              <p className="text-gray-600 dark:text-gray-300">service@akgarten.com</p>
+              <p className="text-gray-600 dark:text-gray-300">kontakt@akgarten.com</p>
             </div>
             
           </div>
