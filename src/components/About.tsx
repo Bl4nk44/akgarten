@@ -1,5 +1,6 @@
 import React from 'react';
 import { Award, Users, Leaf, Clock } from 'lucide-react';
+import aboutImage from '../assets/about-image.png';
 
 export default function About() {
   const stats = [
@@ -68,7 +69,7 @@ export default function About() {
           {/* Right Content - Image */}
           <div className="relative">
             <img 
-              src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+              src={aboutImage} 
               alt="Gärtner bei der Arbeit"
               className="w-full h-96 object-cover rounded-3xl shadow-2xl"
             />
