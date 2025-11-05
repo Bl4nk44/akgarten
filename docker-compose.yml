@@ -16,7 +16,22 @@ services:
       # Zapobiega nadpisywaniu node_modules w kontenerze przez lokalny (jeśli istnieje)
       - nodemodules:/app/node_modules
 
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moja-strona-prod
+    environment:
+      - VERCEL_TOKEN=${VERCEL_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - proxy-network
+
 volumes:
   nodemodules:
+
+networks:
+  proxy-network:
+    external: true
 
 
