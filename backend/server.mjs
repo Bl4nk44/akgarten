@@ -41,6 +41,7 @@ app.post('/api/send-email', async (req, res) => {
       ${data.message}
       -----------------------------------------
       Dane kontaktowe klienta:
+      Imię i nazwisko: ${data.name}
       Adres: ${fullAddress}
       Telefon: ${data.phone || 'Nie podano'}
       Email: ${data.email}
