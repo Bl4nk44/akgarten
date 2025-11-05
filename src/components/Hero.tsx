@@ -1,6 +1,8 @@
 import React from 'react';
 import { ArrowDown, Sparkles } from 'lucide-react';
 import { HashLink as Link } from 'react-router-hash-link';
+import heroImage1 from '../assets/1.png';
+import heroImage2 from '../assets/2.png';
 
 export default function Hero() {
   return (
@@ -55,7 +57,7 @@ export default function Hero() {
                     <div className="relative grid grid-cols-2 gap-4">
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500 mt-8">
               <img 
-                src="/1.png"
+                src={heroImage1}
                 alt="Gartenbild 1"
                 className="w-full aspect-[4/5] object-cover"
               />
@@ -63,7 +65,7 @@ export default function Hero() {
             </div>
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
               <img 
-                src="/2.png"
+                src={heroImage2}
                 alt="Gartenbild 2"
                 className="w-full aspect-[4/5] object-cover"
               />

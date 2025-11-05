@@ -5,25 +5,30 @@ services:
       dockerfile: Dockerfile.dev
     container_name: moja-strona-dev
     ports:
-      # Port dla Vite (frontend)
       - "5173:5173"
     environment:
       - VERCEL_TOKEN=${VERCEL_TOKEN}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
-      # Synchronizacja kodu lokalnego z kontenerem
       - .:/app
-      # Zapobiega nadpisywaniu node_modules w kontenerze przez lokalny (jeśli istnieje)
       - nodemodules:/app/node_modules
 
-  app-prod:
+  frontend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: moja-strona-prod
+    container_name: frontend
+    networks:
+      - proxy-network
+
+  backend:
+    build:
+      context: ./
+      dockerfile: backend/Dockerfile
+    container_name: backend
     environment:
-      - VERCEL_TOKEN=${VERCEL_TOKEN}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - TARGET_EMAIL=${TARGET_EMAIL}
     networks:
       - proxy-network
 
