@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Phone } from 'lucide-react';
 import { HashLink as Link } from 'react-router-hash-link';
 
 export default function Header() {
@@ -69,6 +69,13 @@ export default function Header() {
             >
               Galerie
             </Link>
+                        <a 
+              href="tel:015206136610"
+              className="relative hidden lg:inline-flex h-12 items-center justify-center rounded-xl bg-gray-200 dark:bg-gray-700 px-6 font-medium text-gray-800 dark:text-white transition-colors hover:bg-green-200 dark:hover:bg-green-800"
+            >
+              <Phone className="h-5 w-5 mr-2" />
+              015206136610
+            </a>
             <Link 
               smooth 
               to="/#contact"
@@ -98,6 +105,10 @@ export default function Header() {
               <Link smooth to="/#services" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Leistungen</Link>
               <Link smooth to="/#widgets" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Garten-Tools</Link>
               <Link smooth to="/#gallery" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Galerie</Link>
+              <a href="tel:015206136610" onClick={closeMenu} className="flex items-center text-left text-gray-700 dark:text-gray-300">
+                <Phone className="h-5 w-5 mr-3" />
+                015206136610
+              </a>
               <Link smooth to="/#contact" onClick={closeMenu} className="text-left bg-green-600 text-white px-6 py-2 rounded-full w-fit">Kontakt</Link>
             </nav>
           </div>
