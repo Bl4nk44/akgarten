@@ -59,7 +59,7 @@ export default function Hero() {
               <img 
                 src={heroImage1}
                 alt="Gartenbild 1"
-                className="w-full aspect-[4/5] object-cover"
+                className="w-full aspect-[4/5] object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
@@ -67,7 +67,7 @@ export default function Hero() {
               <img 
                 src={heroImage2}
                 alt="Gartenbild 2"
-                className="w-full aspect-[4/5] object-cover"
+                className="w-full aspect-[4/5] object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
