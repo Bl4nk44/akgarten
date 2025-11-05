@@ -52,20 +52,20 @@ export default function Hero() {
           </div>
 
                     {/* Right Content - Hero Images */}
-          <div className="relative grid grid-cols-2 gap-4">
-            <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                    <div className="relative grid grid-cols-2 gap-4">
+            <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500 mt-8">
               <img 
                 src="/1.png"
                 alt="Gartenbild 1"
-                className="w-full h-96 lg:h-[500px] object-cover"
+                className="w-full aspect-[4/5] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
-            <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500 mt-8">
+            <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
               <img 
                 src="/2.png"
                 alt="Gartenbild 2"
-                className="w-full h-96 lg:h-[500px] object-cover"
+                className="w-full aspect-[4/5] object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>
