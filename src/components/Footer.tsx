@@ -65,7 +65,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-5 w-5 text-green-300" />
-                <span className="text-green-200">service@akgarten.com</span>
+                <span className="text-green-200">kontakt@akgarten.com</span>
               </div>
             </div>
           </div>
