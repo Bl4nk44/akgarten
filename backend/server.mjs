@@ -21,6 +21,11 @@ const targetEmail = process.env.TARGET_EMAIL;
 app.use(cors()); // Na razie otwarte, można zawęzić do domeny produkcyjnej
 app.use(express.json());
 
+// Endpoint dla health checka
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Endpoint do wysyłania e-maili
 app.post('/api/send-email', async (req, res) => {
   try {
