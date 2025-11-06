@@ -1,31 +1,25 @@
-# Etap 1: Budowanie
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# Kopiujemy tylko te pliki package.json, które są potrzebne
-COPY package.json package-lock.json* ./
-
-# Instalujemy tylko zależności produkcyjne
-RUN npm install --omit=dev
-
-# Kopiujemy plik serwera
-COPY backend/server.mjs ./backend/
-
-# Etap 2: Produkcja
+# Używamy oficjalnego obrazu Node.js w wersji 20-alpine
 FROM node:20-alpine
 
+# Ustawiamy katalog roboczy w kontenerze
 WORKDIR /app
 
-# Kopiujemy zależności i kod z etapu budowania
-COPY --from=builder /app .
+# Kopiujemy pliki package.json i package-lock.json (jeśli istnieje)
+COPY package.json ./
+COPY package-lock.json* ./
 
-# Ustawiamy zmienne środowiskowe, jeśli nie są podane z zewnątrz
+# Instalujemy zależności produkcyjne
+RUN npm install --omit=dev
+
+# Kopiujemy kod aplikacji
+COPY . .
+
+# Ustawiamy zmienne środowiskowe
 ENV NODE_ENV=production
 ENV PORT=3001
 
-# Expose port
+# Odsłaniamy port, na którym działa serwer
 EXPOSE 3001
 
 # Uruchamiamy serwer
-CMD ["node", "backend/server.mjs"]
+CMD ["node", "server.mjs"]

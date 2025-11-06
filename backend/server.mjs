@@ -53,7 +53,7 @@ app.post('/api/send-email', async (req, res) => {
     `;
 
     const { data: emailResponse, error } = await resend.emails.send({
-      from: 'Kontakt Akgarten <kontakt@twoja-domena.com>', // WAŻNE: Podmień na zweryfikowaną domenę w Resend
+      from: 'Kontakt Akgarten <kontakt@akgarten.com>', // WAŻNE: Podmień na zweryfikowaną domenę w Resend
       to: [targetEmail],
       subject: `Zapytanie od ${data.name} - ${data.inquiryType}`,
       text: emailBody,
