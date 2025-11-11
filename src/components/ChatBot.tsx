@@ -38,7 +38,13 @@ HINWEIS ZU TERMINEN UND KONTAKT:
 - Verweise stets auf den telefonischen Kontakt unter 015206136610 oder auf das Kontaktformular auf der Website (Bereich "Kontakt").`;
 
 const ChatBot = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => {
+    // domyślnie zamknięty na mobile, otwarty na >= md
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(min-width: 768px)').matches;
+    }
+    return true;
+  });
   const [isMaximized, setIsMaximized] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([

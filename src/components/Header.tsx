@@ -25,8 +25,8 @@ export default function Header() {
       <div className="container mx-auto px-4 py-2">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link smooth to="/#home" onClick={closeMenu} className="flex items-center space-x-3">
-                        <img src="/logo-alfa.png" alt="AK Garten Service Logo" className="h-24 md:h-28 w-auto" />
+                    <Link smooth to="/#home" onClick={closeMenu} className="flex items-center space-x-3">
+            <img src="/logo-alfa.png" alt="AK Garten Service Logo" className="h-16 md:h-28 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -52,13 +52,7 @@ export default function Header() {
             >
               Leistungen
             </Link>
-            <Link 
-              smooth 
-              to="/#widgets"
-              className="relative px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 hover:text-green-600 dark:hover:text-green-400 transition-all duration-300 overflow-hidden btn-shine"
-            >
-              Garten-Tools
-            </Link>
+            
             <Link 
               smooth 
               to="/#gallery"
@@ -100,7 +94,7 @@ export default function Header() {
               <Link smooth to="/#home" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Startseite</Link>
               <Link smooth to="/#about" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Über mich</Link>
               <Link smooth to="/#services" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Leistungen</Link>
-              <Link smooth to="/#widgets" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Garten-Tools</Link>
+
               <Link smooth to="/#gallery" onClick={closeMenu} className="text-left text-gray-700 dark:text-gray-300">Galerie</Link>
               <a href="tel:015206136610" onClick={closeMenu} className="flex items-center text-left text-gray-700 dark:text-gray-300">
                 <Phone className="h-5 w-5 mr-3" />
