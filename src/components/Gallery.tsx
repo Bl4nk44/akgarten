@@ -2,6 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { singleImages, beforeAfterPairs } from '@/data/galleryManifest';
 
+function inferThumb(pathStr: string): string | undefined {
+  if (!pathStr.startsWith('/gallery/')) return undefined;
+  const lastDot = pathStr.lastIndexOf('.');
+  if (lastDot === -1) return undefined;
+  const withThumbDir = pathStr.replace('/gallery/', '/gallery/thumbs/');
+  return withThumbDir.slice(0, withThumbDir.lastIndexOf('.')) + '.thumb' + withThumbDir.slice(withThumbDir.lastIndexOf('.'));
+}
+
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [filter, setFilter] = useState<'all' | 'gallery' | 'pairs'>('all');
@@ -11,17 +19,17 @@ export default function Gallery() {
 
   const allItems = useMemo(() => {
     // W "all" pokazujemy najpierw zwykłe, potem pary (miniatura z "after")
-    const singles = singleImages.map(img => ({ type: 'single' as const, id: img.id, origin: img.src, thumb: img.thumb, title: img.title, description: img.description }));
-    const pairs = beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb, title: p.title, description: p.description }));
+    const singles = singleImages.map(img => ({ type: 'single' as const, id: img.id, origin: img.src, thumb: img.thumb || inferThumb(img.src), title: img.title, description: img.description }));
+    const pairs = beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb || inferThumb(p.after.src), title: p.title, description: p.description }));
     return [...singles, ...pairs];
   }, []);
 
   const currentList = useMemo(() => {
     if (filter === 'gallery') {
-      return singleImages.map(img => ({ type: 'single' as const, id: img.id, origin: img.src, thumb: img.thumb, title: img.title, description: img.description }));
+      return singleImages.map(img => ({ type: 'single' as const, id: img.id, origin: img.src, thumb: img.thumb || inferThumb(img.src), title: img.title, description: img.description }));
     }
     if (filter === 'pairs') {
-      return beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb, title: p.title, description: p.description }));
+      return beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb || inferThumb(p.after.src), title: p.title, description: p.description }));
     }
     return allItems;
   }, [filter, allItems]);
@@ -100,7 +108,7 @@ export default function Gallery() {
                   sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                   alt={item.title || ''}
                   loading="lazy"
-                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500 bg-black"
                 />
                 {item.type === 'pair' && (
                   <span className="absolute top-3 left-3 bg-black/70 text-white text-xs font-semibold px-2 py-1 rounded-md">Vorher/Nachher</span>
@@ -147,7 +155,7 @@ export default function Gallery() {
                   srcSet={`${pagedItems[selectedIndex].thumb || pagedItems[selectedIndex].origin} 1x, ${pagedItems[selectedIndex].origin} 2x`}
                   sizes="(min-width: 1024px) 80vw, 100vw"
                   alt={pagedItems[selectedIndex].title || ''}
-                  className="mx-auto max-w-full max-h-[80vh] object-contain rounded-lg"
+                  className="mx-auto max-w-full max-h-[80vh] object-contain rounded-lg bg-black"
                 />
               ) : (
                 <BeforeAfterViewer pairId={pagedItems[selectedIndex].id} />
@@ -162,33 +170,49 @@ export default function Gallery() {
 
 function BeforeAfterViewer({ pairId }: { pairId: string }) {
   const pair = beforeAfterPairs.find(p => p.id === pairId);
-  const [pos, setPos] = useState(50);
+  const [pos, setPos] = useState(0); // start maks w lewo (100% Vorher)
   if (!pair) return null;
 
   const beforeSrc = pair.before.src;
-  const beforeThumb = pair.before.thumb;
+  const beforeThumb = pair.before.thumb || inferThumb(beforeSrc);
   const afterSrc = pair.after.src;
-  const afterThumb = pair.after.thumb;
+  const afterThumb = pair.after.thumb || inferThumb(afterSrc);
 
+  // Auto-animacja suwaka do prawej po otwarciu
+  React.useEffect(() => {
+    let raf = 0;
+    let start = 0;
+    const duration = 2000; // ms
+    const step = (ts: number) => {
+      if (!start) start = ts;
+      const progress = Math.min(1, (ts - start) / duration);
+      setPos(Math.round(progress * 100));
+      if (progress < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [pairId]);
+
+  // Baza = Nachher (na spodzie), na wierzchu "Vorher" o zmiennej szerokości
   return (
-    <div className="relative mx-auto w-full max-w-4xl h-[60vh] bg-black/20 rounded-lg overflow-hidden select-none">
+    <div className="relative mx-auto w-full max-w-4xl h-[60vh] bg-black rounded-lg overflow-hidden select-none">
       <img
-        src={beforeThumb || beforeSrc}
-        srcSet={`${beforeThumb || beforeSrc} 1x, ${beforeSrc} 2x`}
+        src={afterThumb || afterSrc}
+        srcSet={`${afterThumb || afterSrc} 1x, ${afterSrc} 2x`}
         sizes="(min-width: 1024px) 80vw, 100vw"
-        alt="Vorher"
-        className="absolute inset-0 w-full h-full object-contain"
+        alt="Nachher"
+        className="absolute inset-0 w-full h-full object-contain bg-black"
       />
-      <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
+      <div className="absolute inset-0" style={{ width: `${100 - pos}%`, overflow: 'hidden' }}>
         <img
-          src={afterThumb || afterSrc}
-          srcSet={`${afterThumb || afterSrc} 1x, ${afterSrc} 2x`}
+          src={beforeThumb || beforeSrc}
+          srcSet={`${beforeThumb || beforeSrc} 1x, ${beforeSrc} 2x`}
           sizes="(min-width: 1024px) 80vw, 100vw"
-          alt="Nachher"
-          className="w-full h-full object-contain"
+          alt="Vorher"
+          className="w-full h-full object-contain bg-black"
         />
       </div>
-      <div className="absolute inset-y-0" style={{ left: `${pos}%` }}>
+      <div className="absolute inset-y-0" style={{ left: `${100 - pos}%` }}>
         <div className="w-0.5 h-full bg-white/70" />
         <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white text-black text-xs px-2 py-1 rounded shadow">{pos}%</div>
       </div>
