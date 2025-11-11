@@ -11,17 +11,17 @@ export default function Gallery() {
 
   const allItems = useMemo(() => {
     // W "all" pokazujemy najpierw zwykłe, potem pary (miniatura z "after")
-    const singles = singleImages.map(img => ({ type: 'single' as const, id: img.id, src: img.thumb || img.src, title: img.title, description: img.description }));
-    const pairs = beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, src: p.after.thumb || p.after.src, title: p.title, description: p.description }));
+    const singles = singleImages.map(img => ({ type: 'single' as const, id: img.id, origin: img.src, thumb: img.thumb, title: img.title, description: img.description }));
+    const pairs = beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb, title: p.title, description: p.description }));
     return [...singles, ...pairs];
   }, []);
 
   const currentList = useMemo(() => {
     if (filter === 'gallery') {
-      return singleImages.map(img => ({ type: 'single' as const, id: img.id, src: img.thumb || img.src, title: img.title, description: img.description }));
+      return singleImages.map(img => ({ type: 'single' as const, id: img.id, origin: img.src, thumb: img.thumb, title: img.title, description: img.description }));
     }
     if (filter === 'pairs') {
-      return beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, src: p.after.thumb || p.after.src, title: p.title, description: p.description }));
+      return beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb, title: p.title, description: p.description }));
     }
     return allItems;
   }, [filter, allItems]);
@@ -53,21 +53,7 @@ export default function Gallery() {
     setIsPairModal(pagedItems[prevIndex].type === 'pair');
   };
 
-  const closeLightbox = () => {
-    setSelectedImage(null);
-  };
 
-  const nextImage = () => {
-    if (selectedImage !== null) {
-      setSelectedImage((selectedImage + 1) % filteredImages.length);
-    }
-  };
-
-  const prevImage = () => {
-    if (selectedImage !== null) {
-      setSelectedImage(selectedImage === 0 ? filteredImages.length - 1 : selectedImage - 1);
-    }
-  };
 
   return (
     <section id="gallery" className="py-20 bg-gray-50 dark:bg-gray-800">
@@ -108,7 +94,14 @@ export default function Gallery() {
           {pagedItems.map((item, index) => (
             <div key={item.id} className="group cursor-pointer" onClick={() => openLightbox(index)}>
               <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300">
-                <img src={item.src} alt={item.title || ''} loading="lazy" className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500" />
+                <img
+                  src={item.thumb || item.origin}
+                  srcSet={`${item.thumb || item.origin} 1x, ${item.origin} 2x`}
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  alt={item.title || ''}
+                  loading="lazy"
+                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+                />
                 {item.type === 'pair' && (
                   <span className="absolute top-3 left-3 bg-black/70 text-white text-xs font-semibold px-2 py-1 rounded-md">Vorher/Nachher</span>
                 )}
@@ -149,7 +142,13 @@ export default function Gallery() {
               </button>
 
               {!isPairModal ? (
-                <img src={pagedItems[selectedIndex].src} alt={pagedItems[selectedIndex].title || ''} className="mx-auto max-w-full max-h-[80vh] object-contain rounded-lg" />
+                <img
+                  src={pagedItems[selectedIndex].origin}
+                  srcSet={`${pagedItems[selectedIndex].thumb || pagedItems[selectedIndex].origin} 1x, ${pagedItems[selectedIndex].origin} 2x`}
+                  sizes="(min-width: 1024px) 80vw, 100vw"
+                  alt={pagedItems[selectedIndex].title || ''}
+                  className="mx-auto max-w-full max-h-[80vh] object-contain rounded-lg"
+                />
               ) : (
                 <BeforeAfterViewer pairId={pagedItems[selectedIndex].id} />
               )}
@@ -166,14 +165,28 @@ function BeforeAfterViewer({ pairId }: { pairId: string }) {
   const [pos, setPos] = useState(50);
   if (!pair) return null;
 
-  const before = pair.before.src;
-  const after = pair.after.src;
+  const beforeSrc = pair.before.src;
+  const beforeThumb = pair.before.thumb;
+  const afterSrc = pair.after.src;
+  const afterThumb = pair.after.thumb;
 
   return (
     <div className="relative mx-auto w-full max-w-4xl h-[60vh] bg-black/20 rounded-lg overflow-hidden select-none">
-      <img src={before} alt="Vorher" className="absolute inset-0 w-full h-full object-contain" />
+      <img
+        src={beforeThumb || beforeSrc}
+        srcSet={`${beforeThumb || beforeSrc} 1x, ${beforeSrc} 2x`}
+        sizes="(min-width: 1024px) 80vw, 100vw"
+        alt="Vorher"
+        className="absolute inset-0 w-full h-full object-contain"
+      />
       <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-        <img src={after} alt="Nachher" className="w-full h-full object-contain" />
+        <img
+          src={afterThumb || afterSrc}
+          srcSet={`${afterThumb || afterSrc} 1x, ${afterSrc} 2x`}
+          sizes="(min-width: 1024px) 80vw, 100vw"
+          alt="Nachher"
+          className="w-full h-full object-contain"
+        />
       </div>
       <div className="absolute inset-y-0" style={{ left: `${pos}%` }}>
         <div className="w-0.5 h-full bg-white/70" />

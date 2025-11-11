@@ -8,7 +8,8 @@
     "dev:frontend": "vite",
     "dev:backend": "echo \"Convex backend removed\"",
     "build": "vite build",
-    "lint": "tsc && vite build"
+    "lint": "tsc && vite build",
+    "thumbs": "node ./scripts/gen-thumbs.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
