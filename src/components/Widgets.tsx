@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SeasonalCalendar from './widgets/SeasonalCalendar';
+// import SeasonalCalendar from './widgets/SeasonalCalendar';
 
 export default function Widgets() {
   const [activeWidget] = useState('calendar');
@@ -20,7 +20,7 @@ export default function Widgets() {
 
         {/* Widget Content */}
         <div className="max-w-3xl mx-auto">
-          <SeasonalCalendar />
+          {/* Kalendarz przeniesiony do sekcji kontaktu */}
         </div>
       </div>
     </section>

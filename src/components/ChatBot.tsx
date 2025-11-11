@@ -32,7 +32,10 @@ BESONDERHEITEN:
 - Bei Bewässerung: Beachte Bodenbeschaffenheit und Wetterbedingungen
 - Bei Gartenbau in Deutschland: Berücksichtige die lokalen Klimazonen und Frosttermine
 - Bei kleineren Balkongärten oder Hochbeeten: Gebe spezifische Tipps für begrenzte Räume
-Dein Ton: freundlich, hilfsbereit, professionell, ermutigend`;
+Dein Ton: freundlich, hilfsbereit, professionell, ermutigend
+HINWEIS ZU TERMINEN UND KONTAKT:
+- Wenn Nutzer nach Terminvereinbarung oder Kontakt fragen, erteile KEINE Termine im Chat.
+- Verweise stets auf den telefonischen Kontakt unter 015206136610 oder auf das Kontaktformular auf der Website (Bereich "Kontakt").`;
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(true);
