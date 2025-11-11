@@ -84,6 +84,10 @@ const ChatPayloadSchema = z.object({
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+// Alias pod reverse proxy /api/health
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 // Endpoint do wysyłania e-maili
 app.post('/api/send-email', emailLimiter, async (req, res) => {
