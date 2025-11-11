@@ -158,15 +158,35 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
     }
     const { messages } = parsed.data;
 
+    // Konwersja części złożonych (text/image) do prostego tekstu – bezpieczny fallback
+    const normalized = messages.map((m) => {
+      if (Array.isArray(m.content)) {
+        const text = m.content
+          .map((part) => (typeof part === 'string' ? part : (part.text || '')))
+          .filter(Boolean)
+          .join('\n');
+        return { role: m.role, content: text };
+      }
+      return m;
+    });
+
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      messages,
+      messages: normalized,
     });
 
     const content = completion.choices?.[0]?.message?.content ?? '';
     return res.status(200).json({ text: content });
   } catch (err) {
-    console.error('OpenAI Fehler:', err);
+    // Bardziej szczegółowy log diagnostyczny
+    const anyErr = err;
+    console.error('OpenAI Fehler:', {
+      message: anyErr?.message,
+      status: anyErr?.status,
+      code: anyErr?.code,
+      type: anyErr?.type,
+      data: anyErr?.response?.data,
+    });
     return res.status(500).json({ error: 'Interner Serverfehler' });
   }
 });
