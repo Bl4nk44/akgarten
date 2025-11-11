@@ -1,48 +1,15 @@
 import express from 'express';
-import chokidar from 'chokidar';
-import path from 'path';
 
 const app = express();
-const port = 3001; // API server on a separate port
+const port = 3001;
 
 app.use(express.json({ limit: '10mb' }));
 
-const API_DIR = path.join(process.cwd(), 'api');
-
-let apiHandler;
-
-async function loadApiHandler() {
-  try {
-    // Bust the cache
-    const modulePath = `file://${path.join(API_DIR, 'chat.ts')}?t=${Date.now()}`;
-    const module = await import(modulePath);
-    apiHandler = module.default;
-    console.log('✅ API handler loaded successfully.');
-  } catch (error) {
-    console.error('❌ Failed to load API handler:', error);
-    apiHandler = (req, res) => {
-      res.status(500).json({ error: 'Failed to load API handler.' });
-    };
-  }
-}
-
-app.all('/api/chat', (req, res) => {
-  if (apiHandler) {
-    apiHandler(req, res);
-  } else {
-    res.status(503).json({ error: 'API handler not loaded yet.' });
-  }
-});
-
-// Watch for changes in the API directory
-chokidar.watch(API_DIR).on('all', (event, path) => {
-  if (path.endsWith('.ts')) {
-    console.log(`🔄 Detected change in ${path}, reloading API handler...`);
-    loadApiHandler();
-  }
+// Ten serwer był tylko do hot-reloadu /api/chat z Vercel edge. Usuwamy go, bo backend działa w ./backend.
+app.get('*', (_req, res) => {
+  res.status(410).json({ error: 'Endpoint entfernt. Verwenden Sie den Backend-Server unter /backend.' });
 });
 
 app.listen(port, () => {
-  console.log(`🚀 API server listening on http://localhost:${port}`);
-  loadApiHandler();
+  console.log(`Leerer Dev-Server läuft auf http://localhost:${port} (nur Platzhalter).`);
 });

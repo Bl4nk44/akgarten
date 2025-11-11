@@ -122,13 +122,13 @@ const ChatBot = () => {
       
       apiMessages.push({ role: 'user', content: userContent });
 
-      const response = await fetch('/api/chat', {
+      const response = await fetch('http://localhost:3001/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: apiMessages }),
       });
 
-      if (!response.ok || !response.body) {
+      if (!response.ok) {
         setMessages(prev => [...prev, { text: "Entschuldigung, ein Fehler ist aufgetreten.", sender: 'bot' }]);
         return;
       }
