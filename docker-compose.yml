@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     networks:
-      - proxy-network
+      - services-network
 
   backend:
     build:
@@ -29,14 +29,16 @@ services:
     environment:
       - RESEND_API_KEY=${RESEND_API_KEY}
       - TARGET_EMAIL=${TARGET_EMAIL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
     networks:
-      - proxy-network
+      - services-network
 
 volumes:
   nodemodules:
 
 networks:
-  proxy-network:
+  services-network:
     external: true
 
 
