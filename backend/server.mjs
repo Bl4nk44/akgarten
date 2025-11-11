@@ -4,10 +4,10 @@ import { Resend } from 'resend';
 
 // Sprawdzenie kluczowych zmiennych środowiskowych
 if (!process.env.RESEND_API_KEY) {
-  throw new Error('Missing VITE_RESEND_API_KEY environment variable.');
+  throw new Error('Fehlende Umgebungsvariable RESEND_API_KEY.');
 }
 if (!process.env.TARGET_EMAIL) {
-  throw new Error('Missing TARGET_EMAIL environment variable.');
+  throw new Error('Fehlende Umgebungsvariable TARGET_EMAIL.');
 }
 
 const app = express();
@@ -33,41 +33,41 @@ app.post('/api/send-email', async (req, res) => {
 
     // Walidacja danych
     if (!data.name || !data.email || !data.message) {
-      return res.status(400).json({ message: 'Missing required fields' });
+      return res.status(400).json({ message: 'Fehlende Pflichtfelder' });
     }
 
     const { street, streetNumber, postalCode, city } = data.addressComponents;
     const fullAddress = `${street} ${streetNumber}, ${postalCode} ${city}`;
 
     const emailBody = `
-      Nowa wiadomość z formularza kontaktowego:
+      Neue Nachricht vom Kontaktformular:
       -----------------------------------------
-      Wiadomość:
+      Nachricht:
       ${data.message}
       -----------------------------------------
-      Dane kontaktowe klienta:
-      Imię i nazwisko: ${data.name}
-      Adres: ${fullAddress}
-      Telefon: ${data.phone || 'Nie podano'}
-      Email: ${data.email}
+      Kontaktdaten des Kunden:
+      Name: ${data.name}
+      Adresse: ${fullAddress}
+      Telefon: ${data.phone || 'Nicht angegeben'}
+      E-Mail: ${data.email}
     `;
 
     const { data: emailResponse, error } = await resend.emails.send({
       from: 'Kontakt Akgarten <kontakt@akgarten.com>', // WAŻNE: Podmień na zweryfikowaną domenę w Resend
       to: [targetEmail],
-      subject: `Zapytanie od ${data.name} - ${data.inquiryType}`,
+      subject: `Anfrage von ${data.name} – ${data.inquiryType}`,
       text: emailBody,
     });
 
     if (error) {
       console.error({ error });
-      return res.status(500).json({ message: 'Error sending email', error });
+      return res.status(500).json({ message: 'Fehler beim Senden der E-Mail', error });
     }
 
-    return res.status(200).json({ message: 'Email sent successfully' });
+    return res.status(200).json({ message: 'E-Mail wurde erfolgreich gesendet' });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'An unknown error occurred' });
+    return res.status(500).json({ message: 'Ein unbekannter Fehler ist aufgetreten' });
   }
 });
 
