@@ -5,6 +5,8 @@ import OpenAI from 'openai';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
+import morgan from 'morgan';
+import crypto from 'crypto';
 
 // Sprawdzenie kluczowych zmiennych środowiskowych
 if (!process.env.RESEND_API_KEY) {
@@ -30,6 +32,20 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Middleware
 app.use(helmet());
+
+// x-request-id middleware
+app.use((req, res, next) => {
+  const headerId = req.headers['x-request-id'];
+  const id = typeof headerId === 'string' && headerId.trim() ? headerId : crypto.randomUUID();
+  (req).id = id; // adnotacja runtime, TS nas nie obchodzi tutaj
+  res.setHeader('x-request-id', id);
+  next();
+});
+
+// Logging
+morgan.token('id', (req) => (req).id || '-');
+app.use(morgan(':id :remote-addr :method :url :status :res[content-length] - :response-time ms'));
+
 app.use(express.json({ limit: '5mb' }));
 
 const allowedOrigins = process.env.ALLOWED_ORIGIN ? process.env.ALLOWED_ORIGIN.split(',').map(s => s.trim()).filter(Boolean) : [];
@@ -94,11 +110,27 @@ app.post('/api/send-email', emailLimiter, async (req, res) => {
       E-Mail: ${data.email}
     `;
 
+    const emailHtml = `
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;">
+        <h2 style="margin:0 0 12px;">Neue Nachricht vom Kontaktformular</h2>
+        <p><strong>Nachricht:</strong><br/>${escapeHtml(data.message).replace(/\n/g, '<br/>')}</p>
+        <hr style="border:0;border-top:1px solid #eee;margin:16px 0;"/>
+        <h3 style="margin:0 0 8px;">Kontaktdaten des Kunden</h3>
+        <p>
+          <strong>Name:</strong> ${escapeHtml(data.name)}<br/>
+          <strong>Adresse:</strong> ${escapeHtml(fullAddress)}<br/>
+          <strong>Telefon:</strong> ${data.phone ? escapeHtml(data.phone) : 'Nicht angegeben'}<br/>
+          <strong>E-Mail:</strong> ${escapeHtml(data.email)}
+        </p>
+      </div>
+    `;
+
     const { data: emailResponse, error } = await resend.emails.send({
-      from: 'Kontakt Akgarten <kontakt@akgarten.com>', // WAŻNE: Podmień na zweryfikowaną domenę w Resend
+      from: 'Kontakt Akgarten <kontakt@akgarten.com>',
       to: [targetEmail],
-      subject: `Anfrage von ${data.name} – ${data.inquiryType}`,
+      subject: `Anfrage von ${data.name} – ${data.inquiryType || 'Kontaktformular'}`,
       text: emailBody,
+      html: emailHtml,
     });
 
     if (error) {
@@ -134,6 +166,16 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
     return res.status(500).json({ error: 'Interner Serverfehler' });
   }
 });
+
+// Prosty HTML escaper (wystarczy na nasze potrzeby)
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 // Start serwera
 app.listen(port, () => {
