@@ -1,43 +1,25 @@
 import React from 'react';
-import { Scissors, Sprout, TreePine, Flower, Droplets, Shovel } from 'lucide-react';
+import { Scissors, Sprout, TreePine } from 'lucide-react';
 
 export default function Services() {
   const services = [
     {
-      icon: Scissors,
-      title: 'Gartenpflege',
-      description: 'Regelmäßige Pflege und Wartung Ihres Gartens das ganze Jahr über.',
-      features: ['Rasenmähen', 'Heckenschnitt', 'Unkrautentfernung', 'Bewässerung']
+      icon: Sprout,
+      title: 'Pflanzenpflege',
+      description: '',
+      features: ['Heckenschnitt', 'Baumkronenschnitt', 'Vertikutieren', 'Rasenmähen']
     },
     {
-      icon: Sprout,
-      title: 'Gartenplanung',
-      description: 'Professionelle Planung und Design für Ihren Traumgarten.',
-      features: ['Pflanzenauswahl', 'Layoutplanung', 'Kostenvoranschlag']
+      icon: Scissors,
+      title: 'Gartenpflege',
+      description: '',
+      features: ['Mähen von verwilderten Gärten', 'Laubentfernung', 'Unkrautbekämpfung', 'Umfassende Gartenreinigung']
     },
     {
       icon: TreePine,
-      title: 'Baumpflege',
-      description: 'Fachgerechter Baumschnitt und Baumpflege für gesunde Bäume.',
-      features: ['Kronenschnitt', 'Gesundheitscheck', 'Schädlingsbekämpfung', 'Baumfällung']
-    },
-    {
-      icon: Flower,
-      title: 'Bepflanzung',
-      description: 'Auswahl und Pflanzung von Blumen, Sträuchern und Bäumen.',
-      features: ['Saisonale Bepflanzung', 'Staudengärten', 'Gemüsegärten', 'Kübelbepflanzung']
-    },
-    {
-      icon: Droplets,
-      title: 'Bewässerungssysteme',
-      description: 'Installation und Wartung automatischer Bewässerungsanlagen.',
-      features: ['Tropfbewässerung', 'Sprinkleranlagen', 'Smart-Steuerung', 'Wartung']
-    },
-    {
-      icon: Shovel,
-      title: 'Gartengestaltung',
-      description: 'Komplette Neugestaltung und Umgestaltung von Gartenbereichen.',
-      features: ['Terrassen', 'Wege', 'Teiche', 'Beleuchtung']
+      title: 'Zusätzliche und Spezialarbeiten',
+      description: '',
+      features: ['Entsorgung von Grünschnitt', 'Gehwegreinigung', 'Kleinere Aufräumarbeiten', 'Baumfällung']
     }
   ];
 
