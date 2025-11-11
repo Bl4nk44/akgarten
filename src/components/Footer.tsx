@@ -17,9 +17,8 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-20 w-auto" />
-              <span className="text-xl font-bold">AKGarten</span>
+                        <div className="flex items-center space-x-3">
+              <img src="/logo-alfa.png" alt="AK Garten Service Logo" className="h-24 md:h-28 w-auto" />
             </div>
             <p className="text-green-200 leading-relaxed">
               Ihr Partner für professionelle Gartenpflege und -gestaltung. 

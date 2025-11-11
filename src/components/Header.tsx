@@ -26,10 +26,7 @@ export default function Header() {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" onClick={closeMenu} className="flex items-center space-x-3">
-            <img src="/logo-alfa.png" alt="AK Hausmeisterservice Logo" className="h-20 w-auto" />
-            <span className="text-xl font-bold text-gray-800 dark:text-white hidden sm:inline">
-              AKGarten
-            </span>
+                        <img src="/logo-alfa.png" alt="AK Garten Service Logo" className="h-24 md:h-28 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
