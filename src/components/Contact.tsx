@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { CheckCircle, Send, MapPin, Phone, Mail, Clock } from 'lucide-react';
+import SeasonalCalendar from './widgets/SeasonalCalendar';
 
 export default function Contact() {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = "https://elfsightcdn.com/platform.js";
-    script.async = true;
-    document.body.appendChild(script);
-    return () => { /* Cleanup */ };
-  }, []);
+  
 
   const [formData, setFormData] = useState({
     name: '',
@@ -101,9 +96,8 @@ export default function Contact() {
           </p>
         </div>
         <div className="grid lg:grid-cols-2 gap-12 items-stretch">
-          <div className="relative bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl flex flex-col justify-center overflow-hidden">
-            <div className="elfsight-app-43d5de15-9eed-486d-9af5-31f916ec9032" data-elfsight-app-lazy></div>
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-40 h-6 bg-gray-800 z-10 rounded-md"></div>
+                    <div className="rounded-3xl">
+            <SeasonalCalendar />
           </div>
           <div className="bg-gray-50 dark:bg-gray-800 rounded-3xl p-8 shadow-xl">
             {isSubmitted ? (
