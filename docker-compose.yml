@@ -1,17 +1,4 @@
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    container_name: moja-strona-dev
-    ports:
-      - "5173:5173"
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    volumes:
-      - .:/app
-      - nodemodules:/app/node_modules
-
   frontend:
     build:
       context: .
@@ -40,8 +27,7 @@ services:
       start_period: 10s
     restart: always
 
-volumes:
-  nodemodules:
+
 
 networks:
   services-network:

@@ -32,7 +32,7 @@ export default function Footer() {
               <li><Link smooth to="/#home" className="text-green-200 hover:text-white transition-colors">Startseite</Link></li>
               <li><Link smooth to="/#about" className="text-green-200 hover:text-white transition-colors">Über uns</Link></li>
               <li><Link smooth to="/#services" className="text-green-200 hover:text-white transition-colors">Leistungen</Link></li>
-              <li><Link smooth to="/#widgets" className="text-green-200 hover:text-white transition-colors">Garten-Tools</Link></li>
+              
               <li><Link smooth to="/#gallery" className="text-green-200 hover:text-white transition-colors">Galerie</Link></li>
               <li><Link smooth to="/#contact" className="text-green-200 hover:text-white transition-colors">Kontakt</Link></li>
             </ul>
@@ -40,13 +40,11 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Unsere Leistungen</h3>
+                        <h3 className="text-lg font-semibold mb-4">Unsere Leistungen</h3>
             <ul className="space-y-2">
+              <li><span className="text-green-200">Pflanzenpflege</span></li>
               <li><span className="text-green-200">Gartenpflege</span></li>
-              <li><span className="text-green-200">Gartenplanung</span></li>
-              <li><span className="text-green-200">Baumpflege</span></li>
-              <li><span className="text-green-200">Bewässerungssysteme</span></li>
-              <li><span className="text-green-200">Gartengestaltung</span></li>
+              <li><span className="text-green-200">Zusätzliche und Spezialarbeiten</span></li>
             </ul>
           </div>
 

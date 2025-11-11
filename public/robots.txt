@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://akgarten.com/sitemap.xml

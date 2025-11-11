@@ -25,7 +25,7 @@ export default function Header() {
       <div className="container mx-auto px-4 py-2">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" onClick={closeMenu} className="flex items-center space-x-3">
+          <Link smooth to="/#home" onClick={closeMenu} className="flex items-center space-x-3">
                         <img src="/logo-alfa.png" alt="AK Garten Service Logo" className="h-24 md:h-28 w-auto" />
           </Link>
 
