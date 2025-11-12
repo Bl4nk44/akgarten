@@ -43,9 +43,9 @@ export default function About() {
                   <Award className="h-6 w-6 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white">Zertifizierte Expertise</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Zertifiziertes Fachwissen</h3>
                   <p className="text-gray-600 dark:text-gray-300">
-                    Ausgebildeter Landschaftsgärtner mit kontinuierlicher Weiterbildung.
+                    Erfahrener Gärtner, der sein Fachwissen systematisch erweitert.
                   </p>
                 </div>
               </div>
