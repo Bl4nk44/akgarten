@@ -21,9 +21,7 @@ export default function About() {
                 Über GartenMeister
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                Als leidenschaftlicher Gärtner mit über einem Jahrzehnt Erfahrung verwandle ich 
-                Außenbereiche in lebendige, nachhaltige Gärten. Meine Expertise umfasst alles von 
-                der Gartenplanung bis zur langfristigen Pflege.
+                Als erfahrener Gärtner mit über fünf Jahren Berufserfahrung werde ich mich um Ihren Garten und dessen Schönheit kümmern. Mein Fachwissen umfasst alles von der Gartengestaltung bis zur langfristigen Pflege.
               </p>
             </div>
 
