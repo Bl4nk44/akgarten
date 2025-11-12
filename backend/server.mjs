@@ -183,7 +183,7 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
         model: primaryModel,
         input: normalized.map((m) => ({
           role: m.role,
-          content: [{ type: 'text', text: m.content }],
+          content: [{ type: 'input_text', text: m.content }],
         })),
       });
       content = resp.output_text || '';
