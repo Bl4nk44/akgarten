@@ -19,6 +19,7 @@ services:
       - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
       - OPENAI_MODEL=gpt-5
       - OPENAI_FALLBACK_MODEL=gpt-4.1
+      - APP_VERSION=v2025-11-12
     networks:
       - services-network
     healthcheck:

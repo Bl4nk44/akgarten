@@ -133,6 +133,10 @@ A simple script generates thumbnails at max width 800px:
   - `curl -X POST https://yourdomain/api/chat -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"ping"}]}'`
 - Logging → `docker compose logs -f backend` (check `x-request-id` correlation)
 
+### Smoke-test (one-liner)
+- Health + Chat in one go (expects 200 for health and text in chat):
+  - `curl -s https://yourdomain/api/health | jq && curl -s -X POST https://yourdomain/api/chat -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"ping"}]}' | jq`
+
 ## Notes
 - The Contact section includes a seasonal garden calendar widget on the left.
 - The Before/After gallery opens with the slider at 0% (all "Before") and animates to 100% (shows "After").
