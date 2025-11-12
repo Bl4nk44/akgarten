@@ -193,6 +193,13 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
       }
       return m;
     });
+    // Usuwamy puste wiadomości po normalizacji – 400 od OpenAI powodowało degrade
+    const prepared = normalized
+      .map((m) => ({ role: m.role, content: (m.content || '').trim() }))
+      .filter((m) => m.content.length > 0);
+    if (prepared.length === 0) {
+      return res.status(400).json({ error: 'Leere Nachrichten nach Normalisierung.' });
+    }
 
     const primaryModel = process.env.OPENAI_MODEL || 'gpt-5';
     const fallbackModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-4.1';
@@ -227,11 +234,18 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
 
     let content = '';
     try {
-      // 1) Responses API (primary)
+      // 1) Responses API (primary) – uproszczamy do: system + ostatnia user wiadomość
+      const systemMsg = prepared.find((m) => m.role === 'system')?.content;
+      const lastUserMsg = [...prepared].reverse().find((m) => m.role === 'user')?.content || prepared[prepared.length - 1].content;
+      const responsesInput = [
+        ...(systemMsg ? [{ role: 'system', content: [{ type: 'input_text', text: systemMsg }] }] : []),
+        { role: 'user', content: [{ type: 'input_text', text: lastUserMsg }] },
+      ];
+
       const resp = await tryWithRetries(
         () => openai.responses.create({
           model: primaryModel,
-          input: normalized.map((m) => ({ role: m.role, content: [{ type: 'input_text', text: m.content }] })),
+          input: responsesInput,
         }),
         'responses:primary'
       );
@@ -246,7 +260,7 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
       });
       try {
         const completion = await tryWithRetries(
-          () => openai.chat.completions.create({ model: fallbackModel, messages: normalized }),
+          () => openai.chat.completions.create({ model: fallbackModel, messages: prepared }),
           'chat:fallback'
         );
         content = completion.choices?.[0]?.message?.content ?? '';
