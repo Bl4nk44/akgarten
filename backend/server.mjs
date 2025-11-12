@@ -46,7 +46,7 @@ app.use((req, res, next) => {
 morgan.token('id', (req) => (req).id || '-');
 app.use(morgan(':id :remote-addr :method :url :status :res[content-length] - :response-time ms'));
 
-app.use(express.json({ limit: '5mb' }));
+app.use(express.json({ limit: '10mb' }));
 
 const allowedOrigins = process.env.ALLOWED_ORIGIN ? process.env.ALLOWED_ORIGIN.split(',').map(s => s.trim()).filter(Boolean) : [];
 if (allowedOrigins.length > 0) {
@@ -158,7 +158,7 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
     }
     const { messages } = parsed.data;
 
-    // Konwersja części złożonych (text/image) do prostego tekstu – bezpieczny fallback
+    // Uproszczenie treści do czystego tekstu (ignorujemy obrazy po stronie serwera)
     const normalized = messages.map((m) => {
       if (Array.isArray(m.content)) {
         const text = m.content
@@ -167,16 +167,42 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
           .join('\n');
         return { role: m.role, content: text };
       }
+      if (typeof m.content !== 'string') {
+        return { role: m.role, content: String(m.content || '') };
+      }
       return m;
     });
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: normalized,
-    });
+    const primaryModel = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+    const fallbackModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-3.5-turbo';
 
-    const content = completion.choices?.[0]?.message?.content ?? '';
-    return res.status(200).json({ text: content });
+    let content = '';
+    try {
+      // Preferowana ścieżka: Responses API (nowsze modele 4o/mini)
+      const resp = await openai.responses.create({
+        model: primaryModel,
+        input: normalized.map((m) => ({
+          role: m.role,
+          content: [{ type: 'text', text: m.content }],
+        })),
+      });
+      content = resp.output_text || '';
+    } catch (primaryErr) {
+      // Fallback do starszego Chat Completions jeśli model/endpoint nieobsługiwany
+      console.warn('Primary responses API failed, falling back to chat.completions:', {
+        message: primaryErr?.message,
+        status: primaryErr?.status,
+        code: primaryErr?.code,
+        type: primaryErr?.type,
+      });
+      const completion = await openai.chat.completions.create({
+        model: fallbackModel,
+        messages: normalized,
+      });
+      content = completion.choices?.[0]?.message?.content ?? '';
+    }
+
+    return res.status(200).json({ text: content || '...' });
   } catch (err) {
     // Bardziej szczegółowy log diagnostyczny
     const anyErr = err;
