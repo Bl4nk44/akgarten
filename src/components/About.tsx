@@ -4,9 +4,9 @@ import aboutImage from '../assets/about-image.png';
 
 export default function About() {
   const stats = [
-    { icon: Award, number: '10+', label: 'Jahre Erfahrung' },
-    { icon: Users, number: '500+', label: 'Zufriedene Kunden' },
-    { icon: Leaf, number: '1000+', label: 'Projekte realisiert' },
+    { icon: Award, number: '5+', label: 'Jahre Erfahrung' },
+    { icon: Users, number: '50+', label: 'Zufriedene Kunden' },
+    { icon: Leaf, number: '200+', label: 'Projekte realisiert' },
     { icon: Clock, number: '24/7', label: 'Beratung verfügbar' },
   ];
 
@@ -74,7 +74,7 @@ export default function About() {
               className="w-full h-96 object-cover rounded-3xl shadow-2xl"
             />
             <div className="absolute -bottom-8 -left-8 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl">
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400">10+</div>
+              <div className="text-3xl font-bold text-green-600 dark:text-green-400">5+</div>
               <div className="text-sm text-gray-600 dark:text-gray-300">Jahre Erfahrung</div>
             </div>
           </div>
