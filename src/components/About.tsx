@@ -18,7 +18,7 @@ export default function About() {
           <div className="space-y-8">
             <div>
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                Über GartenMeister
+                Über AKGarten
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
                 Als erfahrener Gärtner mit über fünf Jahren Berufserfahrung werde ich mich um Ihren Garten und dessen Schönheit kümmern. Mein Fachwissen umfasst alles von der Gartengestaltung bis zur langfristigen Pflege.
