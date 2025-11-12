@@ -20,7 +20,7 @@ export default function Hero() {
           <div className="text-center lg:text-left space-y-8">
             <div className="inline-flex items-center space-x-2 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-4 py-2 rounded-full text-sm font-medium">
               <Sparkles className="h-4 w-4" />
-              <span>Professionelle Gartenpflege seit 2015</span>
+              <span>Professionelle Gartenpflege seit 2020</span>
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
@@ -31,7 +31,7 @@ export default function Hero() {
             </h1>
             
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl">
-              Verwandeln Sie Ihren Außenbereich in eine grüne Oase. Mit über 10 Jahren Erfahrung 
+              Verwandeln Sie Ihren Außenbereich in eine grüne Oase. Mit über 5 Jahren Erfahrung 
               schaffen wir Gärten, die nicht nur schön aussehen, sondern auch nachhaltig gedeihen.
             </p>
             
