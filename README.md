@@ -61,9 +61,15 @@ You can run frontend (Vite) and backend (Express) separately during development.
 
 3) Set environment variables for backend in `docker-compose.yml` or your secret store
 - `RESEND_API_KEY`, `TARGET_EMAIL`, `OPENAI_API_KEY`, `ALLOWED_ORIGIN`
+- `OPENAI_MODEL` (recommended: `gpt-5`), `OPENAI_FALLBACK_MODEL` (recommended: `gpt-4.1`)
+- `APP_VERSION` (optional string to expose in `/api/health`)
 
 4) Build and run
 - `docker compose up -d --build`
+
+5) Health endpoints
+- Basic: `GET /health` → `{ status: "ok" }`
+- Extended: `GET /api/health` → `{ status, time, uptimeSec, version, models: { primary, fallback }, cors: { allowedOrigins } }`
 
 The provided `nginx.conf` already enables gzip and long-lived caching for static assets.
 
@@ -115,6 +121,17 @@ A simple script generates thumbnails at max width 800px:
 - `npm run build` – production build (frontend)
 - `npm run lint` – typecheck + test build
 - `npm run thumbs` – generate gallery thumbnails with Sharp
+
+## Deployment Checklist
+- DNS → points to reverse proxy host
+- Reverse Proxy → routes `/` to frontend:80 and `/api/` to backend:3001; add:
+  - `client_max_body_size 10m`, `proxy_read_timeout 60s` on `/api/`
+- Backend env → set: `RESEND_API_KEY`, `TARGET_EMAIL`, `OPENAI_API_KEY`, `ALLOWED_ORIGIN`, `OPENAI_MODEL`, `OPENAI_FALLBACK_MODEL`, optional `APP_VERSION`
+- Build & Deploy → `docker compose up -d --build`
+- Verify:
+  - `curl https://yourdomain/api/health`
+  - `curl -X POST https://yourdomain/api/chat -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"ping"}]}'`
+- Logging → `docker compose logs -f backend` (check `x-request-id` correlation)
 
 ## Notes
 - The Contact section includes a seasonal garden calendar widget on the left.

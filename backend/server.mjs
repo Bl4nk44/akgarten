@@ -84,10 +84,31 @@ const ChatPayloadSchema = z.object({
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
-// Alias pod reverse proxy /api/health
+// Alias pod reverse proxy /api/health (rozszerzony)
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok' });
+  const now = new Date();
+  const uptimeSec = Math.round(process.uptime());
+  const primaryModel = process.env.OPENAI_MODEL || 'gpt-5';
+  const fallbackModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-4.1';
+  const version = process.env.APP_VERSION || 'unknown';
+  const allowedOrigins = allowedOriginsToReport();
+  return res.status(200).json({
+    status: 'ok',
+    time: now.toISOString(),
+    uptimeSec,
+    version,
+    models: { primary: primaryModel, fallback: fallbackModel },
+    cors: { allowedOrigins },
+  });
 });
+
+function allowedOriginsToReport() {
+  try {
+    return allowedOrigins && Array.isArray(allowedOrigins) ? allowedOrigins : [];
+  } catch {
+    return [];
+  }
+}
 
 // Endpoint do wysyłania e-maili
 app.post('/api/send-email', emailLimiter, async (req, res) => {
@@ -149,7 +170,7 @@ app.post('/api/send-email', emailLimiter, async (req, res) => {
   }
 });
 
-// Endpoint do czatu OpenAI
+// Endpoint do czatu OpenAI z retry + degrade
 app.post('/api/chat', chatLimiter, async (req, res) => {
   try {
     const parsed = ChatPayloadSchema.safeParse(req.body);
@@ -173,40 +194,79 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
       return m;
     });
 
-    const primaryModel = process.env.OPENAI_MODEL || 'gpt-4o-mini';
-    const fallbackModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-3.5-turbo';
+    const primaryModel = process.env.OPENAI_MODEL || 'gpt-5';
+    const fallbackModel = process.env.OPENAI_FALLBACK_MODEL || 'gpt-4.1';
+
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const isRetriable = (e) => {
+      const s = e?.status;
+      if (s === 429) return true; // rate limit
+      if (s >= 500 && s < 600) return true; // server errors
+      return false;
+    };
+
+    const tryWithRetries = async (fn, label, maxRetries = 2) => {
+      let lastErr;
+      for (let i = 0; i <= maxRetries; i++) {
+        try {
+          return await fn();
+        } catch (err) {
+          lastErr = err;
+          const payload = { label, message: err?.message, status: err?.status, code: err?.code, type: err?.type };
+          if (!isRetriable(err) || i === maxRetries) {
+            console.warn('OpenAI call failed (no-retry or maxed):', payload);
+            break;
+          }
+          const backoff = 250 * (i + 1);
+          console.warn(`OpenAI call failed, retrying in ${backoff}ms:`, payload);
+          await sleep(backoff);
+        }
+      }
+      throw lastErr;
+    };
 
     let content = '';
     try {
-      // Preferowana ścieżka: Responses API (nowsze modele 4o/mini)
-      const resp = await openai.responses.create({
-        model: primaryModel,
-        input: normalized.map((m) => ({
-          role: m.role,
-          content: [{ type: 'input_text', text: m.content }],
-        })),
-      });
+      // 1) Responses API (primary)
+      const resp = await tryWithRetries(
+        () => openai.responses.create({
+          model: primaryModel,
+          input: normalized.map((m) => ({ role: m.role, content: [{ type: 'input_text', text: m.content }] })),
+        }),
+        'responses:primary'
+      );
       content = resp.output_text || '';
     } catch (primaryErr) {
-      // Fallback do starszego Chat Completions jeśli model/endpoint nieobsługiwany
+      // 2) Fallback: Chat Completions
       console.warn('Primary responses API failed, falling back to chat.completions:', {
         message: primaryErr?.message,
         status: primaryErr?.status,
         code: primaryErr?.code,
         type: primaryErr?.type,
       });
-      const completion = await openai.chat.completions.create({
-        model: fallbackModel,
-        messages: normalized,
-      });
-      content = completion.choices?.[0]?.message?.content ?? '';
+      try {
+        const completion = await tryWithRetries(
+          () => openai.chat.completions.create({ model: fallbackModel, messages: normalized }),
+          'chat:fallback'
+        );
+        content = completion.choices?.[0]?.message?.content ?? '';
+      } catch (fallbackErr) {
+        // 3) Degrade: zwróć grzeczną wiadomość 200 zamiast 500
+        console.error('Both OpenAI paths failed:', {
+          primary: { message: primaryErr?.message, status: primaryErr?.status, code: primaryErr?.code, type: primaryErr?.type },
+          fallback: { message: fallbackErr?.message, status: fallbackErr?.status, code: fallbackErr?.code, type: fallbackErr?.type },
+        });
+        const degradeText =
+          'Entschuldigung, der Chat ist aktuell ausgelastet. Bitte versuchen Sie es später erneut oder nutzen Sie das Kontaktformular bzw. rufen Sie uns unter 015206136610 an.';
+        return res.status(200).json({ text: degradeText });
+      }
     }
 
     return res.status(200).json({ text: content || '...' });
   } catch (err) {
     // Bardziej szczegółowy log diagnostyczny
     const anyErr = err;
-    console.error('OpenAI Fehler:', {
+    console.error('OpenAI Fehler (outer):', {
       message: anyErr?.message,
       status: anyErr?.status,
       code: anyErr?.code,
