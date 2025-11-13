@@ -1,4 +1,4 @@
-# AK Garten Service Website
+# Garten Service Website
 
 A fast, SEO-friendly website for a gardening service business. Built with React + Vite, TailwindCSS, and an Express backend (email + AI chat). Production is served via Nginx with a reverse proxy (e.g., Nginx Proxy Manager).
 
