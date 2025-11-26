@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { singleImages, beforeAfterPairs } from '@/data/galleryManifest';
 
 function inferThumb(pathStr: string): string | undefined {
   if (!pathStr.startsWith('/gallery/')) return undefined;
@@ -10,6 +9,9 @@ function inferThumb(pathStr: string): string | undefined {
   return withThumbDir.slice(0, withThumbDir.lastIndexOf('.')) + '.thumb' + withThumbDir.slice(withThumbDir.lastIndexOf('.'));
 }
 
+type SingleImage = { id: string; src: string; thumb?: string; title?: string; description?: string };
+type Pair = { id: string; title?: string; description?: string; before: { src: string; thumb?: string }; after: { src: string; thumb?: string } };
+
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [filter, setFilter] = useState<'all' | 'gallery' | 'pairs'>('all');
@@ -17,12 +19,30 @@ export default function Gallery() {
   const pageSize = 8; // 2 rzędy x 4 kolumny (albo 3 kolumny na mniejszych ekranach)
   const [page, setPage] = useState(0);
 
+  const [singleImages, setSingleImages] = useState<SingleImage[]>([]);
+  const [beforeAfterPairs, setBeforeAfterPairs] = useState<Pair[]>([]);
+
+  useEffect(() => {
+    let aborted = false;
+    fetch('/api/gallery')
+      .then(r => r.json())
+      .then((data) => {
+        if (aborted) return;
+        setSingleImages(Array.isArray(data?.singleImages) ? data.singleImages : []);
+        setBeforeAfterPairs(Array.isArray(data?.beforeAfterPairs) ? data.beforeAfterPairs : []);
+      })
+      .catch(() => {
+        // zostaw puste na fail
+      });
+    return () => { aborted = true; };
+  }, []);
+
   const allItems = useMemo(() => {
     // W "all" pokazujemy najpierw zwykłe, potem pary (miniatura z "after")
     const singles = singleImages.map(img => ({ type: 'single' as const, id: img.id, origin: img.src, thumb: img.thumb || inferThumb(img.src), title: img.title, description: img.description }));
     const pairs = beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb || inferThumb(p.after.src), title: p.title, description: p.description }));
     return [...singles, ...pairs];
-  }, []);
+  }, [singleImages, beforeAfterPairs]);
 
   const currentList = useMemo(() => {
     if (filter === 'gallery') {
@@ -32,7 +52,7 @@ export default function Gallery() {
       return beforeAfterPairs.map(p => ({ type: 'pair' as const, id: p.id, origin: p.after.src, thumb: p.after.thumb || inferThumb(p.after.src), title: p.title, description: p.description }));
     }
     return allItems;
-  }, [filter, allItems]);
+  }, [filter, allItems, singleImages, beforeAfterPairs]);
 
   const totalPages = Math.ceil(currentList.length / pageSize);
   const pagedItems = currentList.slice(page * pageSize, page * pageSize + pageSize);
@@ -158,7 +178,7 @@ export default function Gallery() {
                   className="mx-auto max-w-full max-h-[80vh] object-contain rounded-lg bg-black"
                 />
               ) : (
-                <BeforeAfterViewer pairId={pagedItems[selectedIndex].id} />
+                <BeforeAfterViewer pairId={pagedItems[selectedIndex].id} pairs={beforeAfterPairs} />
               )}
             </div>
           </div>
@@ -168,8 +188,8 @@ export default function Gallery() {
   );
 }
 
-function BeforeAfterViewer({ pairId }: { pairId: string }) {
-  const pair = beforeAfterPairs.find(p => p.id === pairId);
+function BeforeAfterViewer({ pairId, pairs }: { pairId: string; pairs: Pair[] }) {
+  const pair = pairs.find(p => p.id === pairId);
   const [pos, setPos] = useState(0); // start maks w lewo (100% Vorher)
   if (!pair) return null;
 

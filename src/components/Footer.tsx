@@ -3,9 +3,11 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const showAdmin = (import.meta.env.VITE_SHOW_ADMIN_LINK === '1' || import.meta.env.VITE_SHOW_ADMIN_LINK === 'true');
 
   return (
     <footer className="bg-green-900 dark:bg-green-950 text-white py-16 relative overflow-hidden">
+
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10 z-0">
         <div className="absolute bottom-0 left-10 w-72 h-72 bg-green-400 rounded-full mix-blend-screen filter blur-xl animate-drift [animation-duration:25s]"></div>
@@ -74,7 +76,7 @@ export default function Footer() {
             <p className="text-green-300 text-sm">
               © {currentYear} AKGarten. Alle Rechte vorbehalten.
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
+                        <div className="flex space-x-6 mt-4 md:mt-0">
               <Link to="/datenschutz" className="text-green-300 hover:text-white text-sm transition-colors">
                 Datenschutz
               </Link>
@@ -84,7 +86,13 @@ export default function Footer() {
               <Link to="/agb" className="text-green-300 hover:text-white text-sm transition-colors">
                 AGB
               </Link>
+              {showAdmin && (
+                <Link to="/admin" className="text-green-300 hover:text-white text-sm transition-colors">
+                  Admin
+                </Link>
+              )}
             </div>
+
           </div>
         </div>
       </div>
