@@ -237,8 +237,8 @@ function BeforeAfterViewer({ pairId, pairs }: { pairId: string; pairs: Pair[] })
         <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-white text-black text-xs px-2 py-1 rounded shadow">{pos}%</div>
       </div>
       <input type="range" min={0} max={100} value={pos} onChange={(e) => setPos(Number(e.target.value))} className="absolute bottom-4 left-1/2 -translate-x-1/2 w-1/2" />
-      <div className="absolute top-4 left-4 bg-black/60 text-white text-xs px-2 py-1 rounded">Vorher</div>
-      <div className="absolute top-4 right-4 bg-black/60 text-white text-xs px-2 py-1 rounded">Nachher</div>
+      <div className="absolute top-4 left-4 bg-black/60 text-white text-xs px-2 py-1 rounded">Przed</div>
+      <div className="absolute top-4 right-4 bg-black/60 text-white text-xs px-2 py-1 rounded">Po</div>
     </div>
   );
 }
