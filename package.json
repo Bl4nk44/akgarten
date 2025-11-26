@@ -9,9 +9,11 @@
     "dev:backend": "echo \"Convex backend removed\"",
     "build": "vite build",
     "lint": "tsc && vite build",
-    "thumbs": "node ./scripts/gen-thumbs.mjs",
-    "watermark": "node ./scripts/watermark-existing.mjs"
+        "thumbs": "node ./scripts/gen-thumbs.mjs",
+    "watermark": "node ./scripts/watermark-existing.mjs",
+    "build:manifest": "node ./scripts/build-manifest.mjs"
   },
+
 
     "dependencies": {
     "browser-image-compression": "^2.0.2",
