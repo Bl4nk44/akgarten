@@ -27,7 +27,9 @@ export default function AdminLogin() {
             >
               Zaloguj
             </button>
-            <p className="text-xs text-gray-500 dark:text-gray-400 text-center">Powrót do strony głównej: <a href="/" className="text-green-500 hover:text-green-400">/</a></p>
+            <a href="/" className="w-full inline-flex items-center justify-center px-4 py-2 rounded-lg border border-green-600 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors">
+              ← Powrót na stronę główną
+            </a>
           </div>
         </div>
       </div>
