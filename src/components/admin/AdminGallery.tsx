@@ -41,6 +41,7 @@ function AdminList() {
   const { authHeader } = useAdmin();
   const [data, setData] = useState<Manifest>({ singleImages: [], beforeAfterPairs: [] });
   const [refresh, setRefresh] = useState(0);
+  const [preview, setPreview] = useState<null | { kind: 'single' | 'pair'; id: string }>(null);
 
   useEffect(() => {
     fetch('/api/admin/list', { headers: { ...authHeader } }).then(r=>r.json()).then(setData);
@@ -65,7 +66,7 @@ function AdminList() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {items.map(it => (
           <div key={it.id} className="bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700 rounded-xl shadow overflow-hidden">
-            <img src={it.thumb} alt="thumb" className="w-full h-40 object-cover" />
+            <img src={it.thumb} alt="thumb" className="w-full h-40 object-cover cursor-zoom-in" onClick={()=>setPreview({ kind: it.kind, id: it.id })} />
             <div className="p-3 space-y-2">
               <div className="font-semibold text-gray-900 dark:text-gray-100">{it.id} {it.kind==='pair' && <span className="text-xs text-gray-500">(para)</span>}</div>
               <MetaEditor id={it.id} initial={{ title: it.title, description: it.description }} onSaved={()=>setRefresh(x=>x+1)} />
@@ -74,6 +75,52 @@ function AdminList() {
           </div>
         ))}
       </div>
+
+      {preview && (
+        <div className="fixed inset-0 z-40 bg-black/80 flex items-center justify-center p-4" onClick={()=>setPreview(null)}>
+          <div className="relative w-full max-w-6xl max-h-[90vh] bg-gray-900 rounded-xl shadow-2xl overflow-auto" onClick={(e)=>e.stopPropagation()}>
+            <button onClick={()=>setPreview(null)} className="absolute top-3 right-3 z-10 px-3 py-1.5 rounded bg-white text-gray-900 hover:bg-green-100">Zamknij</button>
+            {preview.kind==='single' ? (
+              <AdminImagePreviewSingle data={data} id={preview.id} />
+            ) : (
+              <AdminImagePreviewPair data={data} id={preview.id} />
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AdminImagePreviewSingle({ data, id }: { data: Manifest; id: string }) {
+  const item = data.singleImages.find(s => s.id === id);
+  if (!item) return null;
+  return (
+    <div className="p-4">
+      <div className="text-white text-lg font-semibold mb-3">{item.id} {item.title ? `– ${item.title}` : ''}</div>
+      <img src={item.src} alt={item.title || item.id} className="mx-auto max-h-[80vh] object-contain rounded-lg bg-black" />
+      {item.description && <div className="mt-3 text-sm text-gray-300">{item.description}</div>}
+    </div>
+  );
+}
+
+function AdminImagePreviewPair({ data, id }: { data: Manifest; id: string }) {
+  const item = data.beforeAfterPairs.find(p => p.id === id);
+  if (!item) return null;
+  return (
+    <div className="p-4">
+      <div className="text-white text-lg font-semibold mb-3">{item.id} {item.title ? `– ${item.title}` : ''}</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <div className="text-xs text-white/80 mb-1">Przed</div>
+          <img src={item.before.src} alt={(item.title || item.id) + ' – Przed'} className="w-full max-h-[70vh] object-contain rounded-lg bg-black" />
+        </div>
+        <div>
+          <div className="text-xs text-white/80 mb-1">Po</div>
+          <img src={item.after.src} alt={(item.title || item.id) + ' – Po'} className="w-full max-h-[70vh] object-contain rounded-lg bg-black" />
+        </div>
+      </div>
+      {item.description && <div className="mt-3 text-sm text-gray-300">{item.description}</div>}
     </div>
   );
 }
