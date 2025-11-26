@@ -1,151 +1,148 @@
 # Garten Service Website
 
-A fast, SEO-friendly website for a gardening service business. Built with React + Vite, TailwindCSS, and an Express backend (email + AI chat). Production is served via Nginx with a reverse proxy (e.g., Nginx Proxy Manager).
+Szybka, SEO-friendly strona dla firmy ogrodniczej. Front: React + Vite + Tailwind. Backend: Express (kontakt, czat AI) + teraz panel admina do galerii (upload + watermark + miniatury).
 
-## Features
-- Responsive landing page (Hero, Services, Gallery, Contact)
-- Gallery with filters, pagination, and Before/After slider
-  - Retina-optimized images via `srcSet/sizes`
-  - Lightweight thumbnails generated with Sharp
-- Contact form (sends email via Resend)
-- AI Chatbot (OpenAI) with safe server-side API
-- Hardened backend: Helmet, rate limiting, schema validation (Zod), CORS allowlist, x-request-id + request logging (morgan)
-- Static site served by Nginx with gzip and long-lived cache for assets
+## Co jest na pokładzie
+- Strona: Hero, About, Services, Gallery (filtry, paginacja, Before/After), Contact, Testimonials
+- Galeria:
+  - Dane ładowane dynamicznie z `/api/gallery` (JSON)
+  - Miniatury bez znaku wodnego (szybsze siatki), obraz serwowany z watermarkiem
+  - Slider Before/After w lightboksie
+- Panel admina (/admin):
+  - Autoryzacja tokenem (Bearer ADMIN_TOKEN w sessionStorage)
+  - Drag’n’drop upload: pojedyncze zdjęcia i pary Before/After
+  - Automatyczny watermark (PNG w prawym-dolnym rogu)
+  - Miniatury generowane automatycznie (bez watermarku)
+  - Edycja tytułu/opisu, usuwanie elementów
+- Formularz kontaktowy (Resend), Chat (OpenAI) z rate-limitami i hełmami (Helmet)
+- Produkcja: Docker + reverse proxy, Nginx conf do cache i gzip
 
-## Tech Stack
-- Frontend: React 18, Vite, TailwindCSS, React Markdown (for bot replies)
-- Backend: Node.js (Express), Resend (email), OpenAI (chat), Helmet, Zod, express-rate-limit, Morgan
-- Infra: Docker + docker-compose, Nginx, Nginx Proxy Manager (reverse proxy)
+## Stos
+- Frontend: React 18, Vite, TailwindCSS
+- Backend: Node/Express, Resend, OpenAI, Helmet, Zod, rate-limit, Morgan, Multer, Sharp
+- Infra: Docker Compose, Nginx/Proxy Manager
 
-## Prerequisites
-- Node.js 18+
-- Docker + Docker Compose (for production setup)
-- Nginx Proxy Manager (or any reverse proxy) for https and routing `/api/*` to backend
-- Resend account and verified sender domain
-- OpenAI API key
+## Zmienne środowiskowe
+Backend (docker-compose lub sekret):
+- RESEND_API_KEY – klucz Resend
+- TARGET_EMAIL – adres odbiorcy
+- OPENAI_API_KEY – klucz OpenAI
+- ALLOWED_ORIGIN – lista do CORS (np. `https://akgarten.com,https://www.akgarten.com`)
+- OPENAI_MODEL, OPENAI_FALLBACK_MODEL – modele dla chatu
+- APP_VERSION – opcjonalna etykieta wersji
+- ADMIN_TOKEN – token do panelu admina (Bearer)
 
-## Environment Variables (Backend)
-Set these for the backend service:
-- `RESEND_API_KEY` – your Resend API key
-- `TARGET_EMAIL` – where contact form emails should be delivered
-- `OPENAI_API_KEY` – OpenAI API key
-- `ALLOWED_ORIGIN` – comma-separated list of allowed origins for CORS (e.g. `https://akgarten.com,https://www.akgarten.com`)
+Frontend (opcjonalnie w .env):
+- VITE_SHOW_ADMIN_LINK=1 – pokaż link „Admin” w stopce (domyślnie ukryty)
 
-## Local Development
-You can run frontend (Vite) and backend (Express) separately during development.
+## Lokalny development
+- Root: `npm install`
+- Backend: `cd backend && npm install`
+- Backend lokalnie: `RESEND_API_KEY=... TARGET_EMAIL=... OPENAI_API_KEY=... ALLOWED_ORIGIN=http://localhost:5173 node server.mjs`
+- Front: `npm run dev` (http://localhost:5173)
+- W dev ustaw proxy `/api/*` na `http://localhost:3001` (NPM lub konfiguracja dev-proxy)
 
-1) Install dependencies
-- Frontend (root):
-  - `npm install`
-- Backend (in `./backend`):
-  - `npm install`
+## Produkcja (Docker Compose)
+1) Sieć współdzielona dla proxy: `docker network create services-network` (jednorazowo)
 
-2) Run backend locally
-- From `./backend`:
-  - `RESEND_API_KEY=... TARGET_EMAIL=... OPENAI_API_KEY=... ALLOWED_ORIGIN=http://localhost:5173 node server.mjs`
-  - Backend runs on `http://localhost:3001`
+2) docker-compose.yml (backend) – ważne:
+- volumes:
+  - `./public/gallery:/app/public/gallery`
+  - `./data:/app/data`
+- env: ustaw m.in. `ADMIN_TOKEN`
 
-3) Run frontend (root)
-- `npm run dev`
-- Frontend runs on `http://localhost:5173`
-- The frontend calls `/api/*` (relative). In dev, set up a reverse proxy (e.g., NPM) to forward `http://localhost:5173/api/*` to `http://localhost:3001/api/*`, or temporarily point the fetch URLs to `http://localhost:3001`.
+3) Reverse proxy (Nginx Proxy Manager):
+- `/` → frontend:80
+- `/api/` → backend:3001
+- HTTPS + HTTP/2 + HSTS
+- Dla uploadów zwiększ limit: `client_max_body_size 20m`, oraz `proxy_read_timeout 60s` na `/api/`
 
-## Production (Docker Compose)
-1) Ensure a shared Docker network for the reverse proxy (NPM) and services:
-- `docker network create services-network`
-
-2) Configure Nginx Proxy Manager (or your reverse proxy) for the domain (e.g., `akgarten.com`)
-- Forward `/` to the `frontend` container (port 80)
-- Forward `/api/` to the `backend` container (port 3001)
-- Enable HTTPS (Let’s Encrypt), HTTP/2, HSTS
-
-3) Set environment variables for backend in `docker-compose.yml` or your secret store
-- `RESEND_API_KEY`, `TARGET_EMAIL`, `OPENAI_API_KEY`, `ALLOWED_ORIGIN`
-- `OPENAI_MODEL` (recommended: `gpt-5`), `OPENAI_FALLBACK_MODEL` (recommended: `gpt-4.1`)
-- `APP_VERSION` (optional string to expose in `/api/health`)
-
-4) Build and run
+4) Build i uruchom:
 - `docker compose up -d --build`
 
-5) Health endpoints
-- Basic: `GET /health` → `{ status: "ok" }`
-- Extended: `GET /api/health` → `{ status, time, uptimeSec, version, models: { primary, fallback }, cors: { allowedOrigins } }`
+5) Healthchecki
+- `GET /health` → `{ status: "ok" }`
+- `GET /api/health` → szczegóły (czas, wersja, modele, CORS)
 
-The provided `nginx.conf` already enables gzip and long-lived caching for static assets.
+## Galeria – dodawanie/zarządzanie (rekomendowane)
+- Wejdź na `/admin` (włącz link w stopce przez `VITE_SHOW_ADMIN_LINK=1` lub wejdź bezpośrednio)
+- Wklej token (ADMIN_TOKEN)
+- Zakładki:
+  - „Dodaj zdjęcia” – drag’n’drop wielu plików; możesz dodać wspólny tytuł/opis (zapis do każdego)
+  - „Dodaj parę” – wybierz before/after + meta
+  - „Lista” – zobacz wszystkie elementy (miniatura), edytuj tytuł/opis, usuń
+- API backendu aktualizuje JSON manifest: `data/gallery.json`. Obrazy lądują w `public/gallery` (oraz thumbs w `public/gallery/thumbs`).
 
-## Gallery: How to Add Images
-Images live in `public/gallery`. The component uses a manifest for ordering and metadata.
+## Galeria – skrypty narzędziowe (manual/zaawansowane)
+- Generuj miniatury (max 800px): `npm run thumbs` (scripts/gen-thumbs.mjs)
+- Nadaj watermark obecnym zdjęciom i przebuduj thumbs: `npm run watermark` (scripts/watermark-existing.mjs)
 
-- Regular images (29 total):
-  - Place files as `/public/gallery/gal-001.jpg` ... `/public/gallery/gal-029.jpg`
-- Before/After pairs (7 pairs):
-  - Place files as `/public/gallery/pairs/pair-01-before.jpg` and `/public/gallery/pairs/pair-01-after.jpg` ... up to `pair-07-*`
-- Thumbnails (recommended for performance):
-  - Generate to `/public/gallery/thumbs/*` with a `.thumb` suffix, e.g. `gal-001.thumb.jpg`, `pairs/pair-01-after.thumb.jpg`
+Uwaga: obecny front pobiera manifest z `/api/gallery`. Plik `src/data/galleryManifest.ts` jest historyczny i nieużywany przez komponent Galerii.
 
-Update the manifest file `src/data/galleryManifest.ts`:
-- `singleImages`: add `{ id: 'gal-001', src: '/gallery/gal-001.jpg', thumb?: '/gallery/thumbs/gal-001.thumb.jpg', title?, description? }`
-- `beforeAfterPairs`: add `{ id: 'pair-01', before: { src, thumb? }, after: { src, thumb? }, title?, description? }`
+## Endpointy backend (galeria)
+- GET `/api/gallery` – publiczny manifest JSON
+- GET `/api/admin/list` – lista (wymaga `Authorization: Bearer ADMIN_TOKEN`)
+- POST `/api/admin/upload-single` – `file`, `title?`, `description?`
+- POST `/api/admin/upload-pair` – `beforeFile`, `afterFile`, `title?`, `description?`
+- PATCH `/api/admin/meta/:id` – `{ title, description }` (puste stringi czyszczą)
+- DELETE `/api/admin/item/:id`
 
-Thumbnails are optional. If not provided, the gallery will infer their paths based on the original file name and use them if found.
-
-### Generate Thumbnails (Sharp)
-A simple script generates thumbnails at max width 800px:
-- `npm run thumbs`
-- Script: `scripts/gen-thumbs.mjs`
-- Output goes to `/public/gallery/thumbs/...` mirroring the source structure
-
-## Email (Resend)
-- Backend endpoint: `POST /api/send-email`
-- Requires a verified sender domain in Resend (the `from` address must match)
-
-## AI Chat (OpenAI)
-- Backend endpoint: `POST /api/chat`
-- Frontend ChatBot calls `/api/chat`
-- Server enforces limits and validation; the model can be adjusted in `backend/server.mjs`
-
-## Security & Logging
-- Helmet for security headers
-- CORS allowlist via `ALLOWED_ORIGIN`
-- Rate limiting on `/api/send-email` and `/api/chat`
-- Request IDs and structured access logs (morgan)
-
-## Nginx (Static Site)
-`nginx.conf` includes:
-- Gzip compression
-- Long-lived cache for static assets (immutable)
-- Safe defaults for content type and referrer policy
-
-## Scripts
-- `npm run dev` – start Vite dev server (frontend)
-- `npm run build` – production build (frontend)
+## Skrypty
+- `npm run dev` – dev server frontendu
+- `npm run build` – build frontendu
 - `npm run lint` – typecheck + test build
-- `npm run thumbs` – generate gallery thumbnails with Sharp
+- `npm run thumbs` – generacja miniaturek
+- `npm run watermark` – watermark dla istniejących + przebudowa miniaturek
 
-## Deployment Checklist
-- DNS → points to reverse proxy host
-- Reverse Proxy → routes `/` to frontend:80 and `/api/` to backend:3001; add:
-  - `client_max_body_size 10m`, `proxy_read_timeout 60s` on `/api/`
-- Backend env → set: `RESEND_API_KEY`, `TARGET_EMAIL`, `OPENAI_API_KEY`, `ALLOWED_ORIGIN`, `OPENAI_MODEL`, `OPENAI_FALLBACK_MODEL`, optional `APP_VERSION`
-- Build & Deploy → `docker compose up -d --build`
-- Verify:
-  - `curl https://yourdomain/api/health`
-  - `curl -X POST https://yourdomain/api/chat -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"ping"}]}'`
-- Logging → `docker compose logs -f backend` (check `x-request-id` correlation)
+## Jak poprawnie zaktualizować serwer do nowej wersji
+Załóżmy, że repo już jest na serwerze, reverse proxy działa.
 
-### Smoke-test (one-liner)
-- Health + Chat in one go (expects 200 for health and text in chat):
-  - `curl -s https://yourdomain/api/health | jq && curl -s -X POST https://yourdomain/api/chat -H 'Content-Type: application/json' -d '{"messages":[{"role":"user","content":"ping"}]}' | jq`
+1) Ustaw/env i flagi (jednorazowo lub przy zmianie):
+- `.env` (lub panel sekretów):
+  - `RESEND_API_KEY`, `TARGET_EMAIL`, `OPENAI_API_KEY`, `ALLOWED_ORIGIN`
+  - `OPENAI_MODEL`, `OPENAI_FALLBACK_MODEL`, `APP_VERSION`
+  - `ADMIN_TOKEN` (mocny losowy)
+- Frontend (opcjonalnie): `VITE_SHOW_ADMIN_LINK=1`
 
-## Notes
-- The Contact section includes a seasonal garden calendar widget on the left.
-- The Before/After gallery opens with the slider at 0% (all "Before") and animates to 100% (shows "After").
+2) Pobierz nową wersję kodu:
+```powershell
+git fetch --all
+git pull
+```
 
-## Google Business Profile (Reviews) – Coming Soon
-Once the Google Business Profile is created and verified, we will:
-- Embed a reviews widget or fetch reviews via an API (depending on your preferred provider)
-- Display the review summary and selected latest reviews in the footer or a dedicated section
-- Add structured data (Schema.org `LocalBusiness` and `AggregateRating`) for better SEO
+3) (Opcjonalnie) Zainstaluj zależności na hoście do narzędziowych skryptów:
+```powershell
+npm ci
+```
 
-## License
-Proprietary – contact the author for usage terms.
+4) Nadaj watermark obecnym zdjęciom i odbuduj miniatury (raz po przejściu na watermarky):
+```powershell
+npm run watermark
+```
+
+5) Zbuduj i przeładuj kontenery (backend ma już wolumeny na `public/gallery` i `data`):
+```powershell
+docker compose up -d --build
+```
+
+6) Zaktualizuj reverse proxy jeśli trzeba:
+- routing `/api/` do backend:3001
+- `client_max_body_size 20m`, `proxy_read_timeout 60s`
+
+7) Smoke-test:
+```powershell
+curl.exe http(s)://twojadomena/api/health
+curl.exe http(s)://twojadomena/api/gallery
+```
+- Wejdź na `/admin`, wklej token, wrzuć testowe zdjęcie, sprawdź, czy pojawia się w Galerii na stronie głównej.
+
+## E-mail i Chat
+- POST `/api/send-email` – przez Resend
+- POST `/api/chat` – OpenAI z retry/degrade
+
+## Bezpieczeństwo i logi
+- Helmet, Zod, rate-limit, CORS allowlist, morgan z `x-request-id`
+- Auth panelu: Bearer token (`ADMIN_TOKEN`). Dla większej twardości możesz dorzucić dodatkowy Basic Auth na `/admin/*` w proxy.
+
+## Licencja
+Proprietary – kontakt w celu ustalenia warunków.
