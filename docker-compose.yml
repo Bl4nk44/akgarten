@@ -21,6 +21,8 @@ services:
       - OPENAI_FALLBACK_MODEL=gpt-4.1
       - APP_VERSION=v2025-11-12
       - ADMIN_TOKEN=${ADMIN_TOKEN}
+    ports:
+      - "3001:3001"
     volumes:
       - ./public/gallery:/app/public/gallery
       - ./data:/app/data
