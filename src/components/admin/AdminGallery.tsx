@@ -190,11 +190,11 @@ function UploadPair() {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Before</div>
+          <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Przed</div>
           <input type="file" accept="image/*" onChange={(e)=>setBefore(e.target.files?.[0]||null)} className="block w-full text-sm text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
         </div>
         <div>
-          <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">After</div>
+          <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Po</div>
           <input type="file" accept="image/*" onChange={(e)=>setAfter(e.target.files?.[0]||null)} className="block w-full text-sm text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
         </div>
       </div>
