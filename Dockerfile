@@ -3,6 +3,10 @@ FROM node:20 AS build
 
 WORKDIR /app
 
+# Build-time config dla Vite (link Admin w stopce)
+ARG VITE_SHOW_ADMIN_LINK
+ENV VITE_SHOW_ADMIN_LINK=${VITE_SHOW_ADMIN_LINK}
+
 # Kopiujemy package.json i package-lock.json
 COPY package*.json ./
 

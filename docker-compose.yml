@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_SHOW_ADMIN_LINK: ${VITE_SHOW_ADMIN_LINK}
     container_name: frontend
     networks:
       - services-network
