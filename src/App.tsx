@@ -8,6 +8,7 @@ import Impressum from './pages/Impressum';
 import CookieConsent from './components/CookieConsent';
 import ChatBot from './components/ChatBot';
 import Layout from './components/Layout';
+import AdminPage from './pages/Admin';
 
 export default function App() {
   useEffect(() => {
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="datenschutz" element={<Datenschutz />} />
           <Route path="impressum" element={<Impressum />} />
         </Route>
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
       <Toaster position="top-right" />
       <CookieConsent />
