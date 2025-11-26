@@ -7,6 +7,8 @@ import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import morgan from 'morgan';
 import crypto from 'crypto';
+import { createAdminGalleryRouter } from './routes/admin-gallery.mjs';
+import { authRequired } from './middleware/auth.mjs';
 
 // Sprawdzenie kluczowych zmiennych środowiskowych
 if (!process.env.RESEND_API_KEY) {
@@ -300,6 +302,9 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
+
+// Gallery/admin routes
+app.use('/api', createAdminGalleryRouter(authRequired));
 
 // Start serwera
 app.listen(port, () => {
