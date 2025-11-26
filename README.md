@@ -27,7 +27,7 @@ Backend (docker-compose or secrets):
 - RESEND_API_KEY – Resend API key
 - TARGET_EMAIL – target inbox
 - OPENAI_API_KEY – OpenAI API key
-- ALLOWED_ORIGIN – CORS list (e.g., `https://akgarten.com,https://www.akgarten.com`)
+- ALLOWED_ORIGIN – CORS list (e.g., `https://yourdomain.com,https://www.yourdomain.com`)
 - OPENAI_MODEL, OPENAI_FALLBACK_MODEL – chat models
 - APP_VERSION – optional version label
 - ADMIN_TOKEN – admin panel token (Bearer)
