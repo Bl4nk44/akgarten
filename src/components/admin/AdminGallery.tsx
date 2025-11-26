@@ -7,21 +7,31 @@ type Pair = { id: string; title?: string; description?: string; before: { src: s
 type Manifest = { singleImages: Single[]; beforeAfterPairs: Pair[] };
 
 export default function AdminGallery() {
-  const { token } = useAdmin();
+  const { token, setToken } = useAdmin();
   const [tab, setTab] = useState<'list' | 'single' | 'pair'>('list');
 
   if (!token) return null;
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="flex gap-2 mb-6">
-        <button onClick={()=>setTab('list')} className={`px-3 py-2 rounded ${tab==='list'?'bg-green-600 text-white':'bg-white dark:bg-gray-700'}`}>Lista</button>
-        <button onClick={()=>setTab('single')} className={`px-3 py-2 rounded ${tab==='single'?'bg-green-600 text-white':'bg-white dark:bg-gray-700'}`}>Dodaj zdjęcia</button>
-        <button onClick={()=>setTab('pair')} className={`px-3 py-2 rounded ${tab==='pair'?'bg-green-600 text-white':'bg-white dark:bg-gray-700'}`}>Dodaj parę</button>
+    <section className="min-h-screen bg-gray-50 dark:bg-gray-900 py-10">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white">Panel administracyjny</h1>
+          <button onClick={()=>setToken(null)} className="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border hover:bg-gray-50 dark:hover:bg-gray-700">Wyloguj</button>
+        </div>
+
+        <div className="bg-white dark:bg-gray-800/90 border border-green-600/30 rounded-2xl shadow-xl p-4">
+          <div className="flex flex-wrap gap-2 mb-6">
+            <button onClick={()=>setTab('list')} className={`px-3 py-2 rounded-lg transition ${tab==='list'?'bg-green-600 text-white':'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}>Lista</button>
+            <button onClick={()=>setTab('single')} className={`px-3 py-2 rounded-lg transition ${tab==='single'?'bg-green-600 text-white':'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}>Dodaj zdjęcia</button>
+            <button onClick={()=>setTab('pair')} className={`px-3 py-2 rounded-lg transition ${tab==='pair'?'bg-green-600 text-white':'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'}`}>Dodaj parę</button>
+          </div>
+
+          {tab==='list' && <AdminList />}
+          {tab==='single' && <UploadSingle />}
+          {tab==='pair' && <UploadPair />}
+        </div>
       </div>
-      {tab==='list' && <AdminList />}
-      {tab==='single' && <UploadSingle />}
-      {tab==='pair' && <UploadPair />}
-    </div>
+    </section>
   );
 }
 
@@ -43,10 +53,10 @@ function AdminList() {
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {items.map(it => (
-          <div key={it.id} className="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
+          <div key={it.id} className="bg-white dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700 rounded-xl shadow overflow-hidden">
             <img src={it.thumb} alt="thumb" className="w-full h-40 object-cover" />
             <div className="p-3 space-y-2">
-              <div className="font-semibold">{it.id} {it.kind==='pair' && <span className="text-xs text-gray-500">(para)</span>}</div>
+              <div className="font-semibold text-gray-900 dark:text-gray-100">{it.id} {it.kind==='pair' && <span className="text-xs text-gray-500">(para)</span>}</div>
               <MetaEditor id={it.id} initial={{ title: it.title, description: it.description }} onSaved={()=>setRefresh(x=>x+1)} />
               <DeleteButton id={it.id} onDeleted={()=>setRefresh(x=>x+1)} />
             </div>
@@ -65,8 +75,8 @@ function MetaEditor({ id, initial, onSaved }: { id: string; initial: { title?: s
 
   return (
     <div className="space-y-2">
-      <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Tytuł" className="w-full px-2 py-1 rounded border bg-transparent" />
-      <textarea value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Opis" className="w-full px-2 py-1 rounded border bg-transparent" rows={2} />
+      <input value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Tytuł" className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100" />
+      <textarea value={description} onChange={(e)=>setDescription(e.target.value)} placeholder="Opis" className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100" rows={2} />
       <div className="flex gap-2">
         <button disabled={busy} onClick={async ()=>{ setBusy(true); await fetch(`/api/admin/meta/${id}`, { method:'PATCH', headers: { 'Content-Type':'application/json', ...authHeader }, body: JSON.stringify({ title, description }) }); setBusy(false); onSaved(); }} className="px-3 py-1 rounded bg-green-600 text-white">Zapisz</button>
         <button disabled={busy} onClick={async ()=>{ setBusy(true); await fetch(`/api/admin/meta/${id}`, { method:'PATCH', headers: { 'Content-Type':'application/json', ...authHeader }, body: JSON.stringify({ title: '', description: '' }) }); setBusy(false); setTitle(''); setDescription(''); onSaved(); }} className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700">Wyczyść</button>
@@ -116,16 +126,16 @@ function UploadSingle() {
 
   return (
     <div className="space-y-4">
-      <div onDragOver={(e)=>e.preventDefault()} onDrop={onDrop} className="border-2 border-dashed rounded-xl p-10 text-center">
+      <div onDragOver={(e)=>e.preventDefault()} onDrop={onDrop} className="border-2 border-dashed border-green-600/40 bg-white dark:bg-gray-900 rounded-2xl p-10 text-center text-gray-700 dark:text-gray-300">
         Przeciągnij zdjęcia tutaj (JPG/PNG/WebP)
       </div>
-      {files.length>0 && <div className="text-sm text-gray-500">Wybrane: {files.map(f=>f.name).join(', ')}</div>}
+      {files.length>0 && <div className="text-sm text-gray-500 dark:text-gray-400">Wybrane: {files.map(f=>f.name).join(', ')}</div>}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <input className="px-3 py-2 rounded border bg-transparent" placeholder="Tytuł (opcjonalnie)" value={title} onChange={(e)=>setTitle(e.target.value)} />
-        <input className="px-3 py-2 rounded border bg-transparent" placeholder="Opis (opcjonalnie)" value={description} onChange={(e)=>setDescription(e.target.value)} />
+        <input className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100" placeholder="Tytuł (opcjonalnie)" value={title} onChange={(e)=>setTitle(e.target.value)} />
+        <input className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100" placeholder="Opis (opcjonalnie)" value={description} onChange={(e)=>setDescription(e.target.value)} />
       </div>
-      <button onClick={uploadAll} className="px-4 py-2 rounded bg-green-600 text-white font-semibold">Wyślij {files.length>0?`(${files.length})`:''}</button>
-      {log.length>0 && <pre className="text-xs bg-black/50 text-white p-3 rounded max-h-60 overflow-auto">{log.join('\n')}</pre>}
+      <button onClick={uploadAll} className="px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700">Wyślij {files.length>0?`(${files.length})`:''}</button>
+      {log.length>0 && <pre className="text-xs bg-black/60 text-white p-3 rounded-xl max-h-60 overflow-auto">{log.join('\n')}</pre>}
     </div>
   );
 }
@@ -154,19 +164,19 @@ function UploadPair() {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <div className="font-semibold mb-1">Before</div>
-          <input type="file" accept="image/*" onChange={(e)=>setBefore(e.target.files?.[0]||null)} />
+          <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Before</div>
+          <input type="file" accept="image/*" onChange={(e)=>setBefore(e.target.files?.[0]||null)} className="block w-full text-sm text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
         </div>
         <div>
-          <div className="font-semibold mb-1">After</div>
-          <input type="file" accept="image/*" onChange={(e)=>setAfter(e.target.files?.[0]||null)} />
+          <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">After</div>
+          <input type="file" accept="image/*" onChange={(e)=>setAfter(e.target.files?.[0]||null)} className="block w-full text-sm text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <input className="px-3 py-2 rounded border bg-transparent" placeholder="Tytuł (opcjonalnie)" value={title} onChange={(e)=>setTitle(e.target.value)} />
-        <input className="px-3 py-2 rounded border bg-transparent" placeholder="Opis (opcjonalnie)" value={description} onChange={(e)=>setDescription(e.target.value)} />
+        <input className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100" placeholder="Tytuł (opcjonalnie)" value={title} onChange={(e)=>setTitle(e.target.value)} />
+        <input className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100" placeholder="Opis (opcjonalnie)" value={description} onChange={(e)=>setDescription(e.target.value)} />
       </div>
-      <button onClick={uploadPair} className="px-4 py-2 rounded bg-green-600 text-white font-semibold">Wyślij parę</button>
+      <button onClick={uploadPair} className="px-4 py-2 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700">Wyślij parę</button>
     </div>
   );
 }
