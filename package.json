@@ -3,14 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
+    "scripts": {
     "dev": "vite",
     "dev:frontend": "vite",
     "dev:backend": "echo \"Convex backend removed\"",
     "build": "vite build",
     "lint": "tsc && vite build",
-    "thumbs": "node ./scripts/gen-thumbs.mjs"
+    "thumbs": "node ./scripts/gen-thumbs.mjs",
+    "watermark": "node ./scripts/watermark-existing.mjs"
   },
+
     "dependencies": {
     "browser-image-compression": "^2.0.2",
     "clsx": "^2.1.1",

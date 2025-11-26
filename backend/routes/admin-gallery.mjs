@@ -94,11 +94,16 @@ export function createAdminGalleryRouter(authRequired) {
       await ensureDir(PUB_GALLERY);
       await ensureDir(PUB_THUMBS);
 
-      const watermarked = await applyWatermark({ inputBuffer: req.file.buffer, watermarkPath: WATERMARK_PATH, scale: 0.12, margin: 24, output: 'jpeg', quality: 85 });
+      // obróć oryginał (bez watermarku) – przyda się do miniatury bez znaku wodnego
+      const rotatedBuf = await (await (import('sharp'))).default(req.file.buffer).rotate().toBuffer();
+
+      // wersja serwowana z watermarkiem
+      const watermarked = await applyWatermark({ inputBuffer: rotatedBuf, watermarkPath: WATERMARK_PATH, scale: 0.12, margin: 24, output: 'jpeg', quality: 85 });
       const originPath = path.join(PUB_GALLERY, `${id}.jpg`);
       await fs.writeFile(originPath, watermarked);
 
-      const thumbBuf = await makeThumbFromBuffer({ inputBuffer: watermarked, width: 800, output: 'jpeg', quality: 80 });
+      // miniatura bez watermarku
+      const thumbBuf = await makeThumbFromBuffer({ inputBuffer: rotatedBuf, width: 800, output: 'jpeg', quality: 80 });
       const thumbPath = path.join(PUB_THUMBS, `${id}.thumb.jpg`);
       await fs.writeFile(thumbPath, thumbBuf);
 
@@ -127,16 +132,22 @@ export function createAdminGalleryRouter(authRequired) {
       await ensureDir(pairsDir);
       await ensureDir(pairsThumbsDir);
 
-      const beforeWM = await applyWatermark({ inputBuffer: beforeFile.buffer, watermarkPath: WATERMARK_PATH, scale: 0.12, margin: 24, output: 'jpeg', quality: 85 });
-      const afterWM = await applyWatermark({ inputBuffer: afterFile.buffer, watermarkPath: WATERMARK_PATH, scale: 0.12, margin: 24, output: 'jpeg', quality: 85 });
+      // obróć oryginały (bez watermarku) – miniatury powstaną z tych buforów
+      const sharpMod = (await import('sharp')).default;
+      const beforeRot = await sharpMod(beforeFile.buffer).rotate().toBuffer();
+      const afterRot = await sharpMod(afterFile.buffer).rotate().toBuffer();
+
+      const beforeWM = await applyWatermark({ inputBuffer: beforeRot, watermarkPath: WATERMARK_PATH, scale: 0.12, margin: 24, output: 'jpeg', quality: 85 });
+      const afterWM = await applyWatermark({ inputBuffer: afterRot, watermarkPath: WATERMARK_PATH, scale: 0.12, margin: 24, output: 'jpeg', quality: 85 });
 
       const beforeName = `${id}-before.jpg`;
       const afterName = `${id}-after.jpg`;
       await fs.writeFile(path.join(pairsDir, beforeName), beforeWM);
       await fs.writeFile(path.join(pairsDir, afterName), afterWM);
 
-      const beforeThumb = await makeThumbFromBuffer({ inputBuffer: beforeWM, width: 800, output: 'jpeg', quality: 80 });
-      const afterThumb = await makeThumbFromBuffer({ inputBuffer: afterWM, width: 800, output: 'jpeg', quality: 80 });
+      // miniatury bez watermarku
+      const beforeThumb = await makeThumbFromBuffer({ inputBuffer: beforeRot, width: 800, output: 'jpeg', quality: 80 });
+      const afterThumb = await makeThumbFromBuffer({ inputBuffer: afterRot, width: 800, output: 'jpeg', quality: 80 });
       await fs.writeFile(path.join(pairsThumbsDir, `${id}-before.thumb.jpg`), beforeThumb);
       await fs.writeFile(path.join(pairsThumbsDir, `${id}-after.thumb.jpg`), afterThumb);
 
