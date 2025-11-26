@@ -35,9 +35,19 @@ window.addEventListener('message', async (message) => {
       : null,
     // End of code for taking screenshots on chef.convex.dev.
   ].filter(Boolean),
+    server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
 }));
+
